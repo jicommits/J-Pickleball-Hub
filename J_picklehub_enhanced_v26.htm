@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>J's Pickleball System — Enhanced v19</title>
+<style>
+:root{--bg:#09070f;--panel:#15111f;--panel2:#1d172a;--line:#332746;--text:#f7f4ff;--muted:#aaa0bb;--purple:#8b5cf6;--purple2:#6d28d9;--green:#22c55e;--red:#ef4444;--gold:#f59e0b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 18% 15%,#251544 0%,transparent 32%),radial-gradient(circle at 82% 82%,#1a1030 0%,transparent 30%),linear-gradient(135deg,#07060b 0%,#0d0916 45%,#08060d 100%);background-size:150% 150%;background-position:0% 0%;color:var(--text);font-family:Inter,system-ui,sans-serif;position:relative;min-height:100vh;overflow-x:hidden;animation:backgroundDrift 22s ease-in-out infinite alternate}body::before,body::after{content:"";position:fixed;pointer-events:none;mix-blend-mode:screen}body::before{z-index:-2;width:48vw;height:48vw;top:-20vw;left:-14vw;border-radius:50%;filter:blur(75px);opacity:.13;background:radial-gradient(circle at 50% 50%,var(--purple) 0%,#6d28d9 28%,transparent 70%);animation:ambientFloat 18s ease-in-out infinite alternate}body::after{z-index:-2;width:75vw;height:18vh;top:43%;right:-28vw;border-radius:999px;filter:blur(65px);opacity:.10;background:linear-gradient(90deg,transparent 0%,#6d28d9 22%,#c084fc 50%,#8b5cf6 72%,transparent 100%);transform:rotate(-10deg);animation:gradientSweep 20s ease-in-out infinite alternate-reverse}@keyframes backgroundDrift{0%{background-position:0% 0%}50%{background-position:70% 35%}100%{background-position:15% 80%}}@keyframes ambientFloat{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(7vw,4vh,0) scale(1.08)}100%{transform:translate3d(-4vw,8vh,0) scale(.96)}}@keyframes gradientSweep{0%{transform:translate3d(22vw,-5vh,0) rotate(-10deg) scale(.92);opacity:.06}50%{transform:translate3d(-8vw,3vh,0) rotate(-4deg) scale(1.08);opacity:.12}100%{transform:translate3d(-35vw,-4vh,0) rotate(8deg) scale(.95);opacity:.07}}@media(prefers-reduced-motion:reduce){body,body::before,body::after{animation:none}}.app{width:100%;max-width:1600px;margin:0 auto;padding:20px}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:16px 18px;background:#13101deb;border:1px solid var(--line);border-radius:18px;position:sticky;top:43px;z-index:5;backdrop-filter:blur(10px)}
+.brand{display:flex;gap:11px;align-items:center}.logo{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),var(--purple2));font-size:22px}.brand h1{font-size:18px;margin:0}.brand small{color:var(--muted)}nav{display:flex;gap:6px;flex-wrap:wrap}.nav,.btn{background:#171321;color:var(--text);border:1px solid var(--line);padding:9px 13px;border-radius:10px;cursor:pointer}.nav.active,.primary{background:linear-gradient(135deg,var(--purple2),var(--purple));border-color:transparent}.danger{color:#ffb2bd;background:#29131a}.success{color:#9af0b8;background:#102419}
+main{margin-top:20px;width:100%;display:block}.page{display:none;width:100%;max-width:none}.page.active{display:block;width:100%}.page>*{max-width:none}.hero,.card,.panel,.rotation,.team{background:linear-gradient(180deg,#1b1628,#130f1c);border:1px solid var(--line);border-radius:17px}.hero{padding:20px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.hero h2{margin:0 0 5px}.hero p{margin:0;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:15px}.card{padding:17px}.label{font-size:11px;color:var(--muted);text-transform:uppercase}.value{font-size:28px;font-weight:800;margin-top:6px}.section{display:flex;justify-content:space-between;align-items:center;margin:25px 0 11px}.section h2{font-size:18px;margin:0}.muted{color:var(--muted)}
+.rotation-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.rotation{padding:16px}.rotation.next{border-color:#6b48a0;box-shadow:0 0 0 1px #8b5cf61a}.round{font-size:11px;text-transform:uppercase;color:var(--muted)}.rotation h3{margin:6px 0 13px}.mini{padding:10px;background:#0f0c15;border:1px solid var(--line);border-radius:10px;margin-top:8px}.p{color:#c4b5fd}.g{color:#86efac}.sit{font-size:11px;color:var(--muted);margin-top:12px}.chips,.waiting{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.chips span,.waiting span{padding:5px 8px;border-radius:999px;border:1px solid var(--line);background:#1b1628;font-size:11px}
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:15px}.live-courts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:14px;margin-top:15px}.team{padding:18px}.team-name{font-weight:800}.team.purple .team-name{color:#c4b5fd}.team.green .team-name{color:#86efac}.player{padding:10px;background:#0f0c15;border:1px solid var(--line);border-radius:10px;margin-top:7px}.score{width:100%;margin-top:14px;background:#0d0a12;color:white;border:2px solid var(--line);border-radius:14px;text-align:center;font-size:38px;font-weight:800;padding:7px;outline:none}.score:focus{border-color:var(--purple)}.player.swap-inline{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.player.swap-inline .player-label{flex:1;min-width:90px}.inline-swap-select{width:125px;min-width:105px;background:#0e0b14;color:white;border:1px solid var(--line);border-radius:8px;padding:6px 7px;font-size:11px}.swap-icon{flex:0 0 30px;width:30px;height:30px;padding:0;border-radius:8px;border:1px solid var(--line);font-size:17px;font-weight:900;cursor:pointer;display:grid;place-items:center}.swap-confirm{background:#102419;color:#86efac;border-color:#315d40}.swap-cancel{background:#29131a;color:#ffb2bd;border-color:#63303b}.swap-icon:hover{filter:brightness(1.18);transform:translateY(-1px)}
+.panel{padding:17px;margin-top:15px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.table{overflow:auto;border:1px solid var(--line);border-radius:13px}table{width:100%;border-collapse:collapse;min-width:850px}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left}th{background:#181321;color:#c9bfd8;font-size:11px;text-transform:uppercase}tr:last-child td{border:0}.r1{background:#f59e0b12}.r2{background:#cbd5e112}.r3{background:#c0845712}.progress{height:6px;background:#0b0910;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--purple2),var(--purple))}
+.form{display:flex;gap:8px}.form input{flex:1;min-width:200px}input[type=text]{background:#0e0b14;color:white;border:1px solid var(--line);border-radius:10px;padding:10px;outline:none}.player-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.player-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px;background:#15111f;border:1px solid var(--line);border-radius:11px}.dot{width:9px;height:9px;border-radius:50%;background:#555;display:inline-block;margin-right:7px}.dot.on{background:var(--green);box-shadow:0 0 8px #22c55e88}.empty{text-align:center;color:var(--muted);padding:25px}.session-panel{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.session-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#171321;font-size:12px}.history-player{display:inline-flex;align-items:center;gap:4px;margin:2px 4px 2px 0;padding:3px 5px;border:1px solid var(--line);border-radius:8px;background:#171321}.history-player .btn{padding:3px 6px;font-size:10px}.toast{display:none;position:fixed;right:20px;bottom:20px;background:#191421;border:1px solid #574173;padding:12px 15px;border-radius:11px;z-index:20}.export-bar{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.export-bar .tour-field{min-width:250px}.export-bar select{width:100%;background:#0e0b14;color:white;border:1px solid var(--line);border-radius:10px;padding:10px}
+@media(max-width:950px){.cards{grid-template-columns:repeat(2,1fr)}.rotation-grid{grid-template-columns:1fr}.player-grid{grid-template-columns:1fr 1fr}.game-grid{grid-template-columns:1fr}.live-courts-grid{grid-template-columns:1fr}}@media(max-width:600px){.app{padding:10px}header{position:static;align-items:flex-start;flex-direction:column}.cards,.player-grid{grid-template-columns:1fr 1fr}}
+
+.modebar{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.swap-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.swap-row select{flex:1;min-width:145px;background:#0e0b14;color:white;border:1px solid var(--line);border-radius:10px;padding:9px}.swap-editor{gap:7px}.swap-name{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.6px}.swap-arrow{color:#c4b5fd;font-size:18px;font-weight:900}.court-select{background:#0e0b14;color:white;border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:110px}
+.bracket{display:flex;gap:14px;overflow:auto;padding-bottom:10px}
+.bracket-col{min-width:220px;flex:1}.bracket-col h3{font-size:13px;color:var(--muted);text-transform:uppercase}
+.match{background:#15111f;border:1px solid var(--line);border-radius:12px;padding:11px;margin:10px 0}
+.match.done{border-color:#315d40}.match .slot{padding:7px;border-bottom:1px solid var(--line)}
+.match .slot:last-child{border-bottom:0}.champion{padding:18px;border:1px solid #7b5b1c;background:#21190b;border-radius:14px;text-align:center}
+
+.scoreboard-wrap{max-width:1050px;margin:15px auto}.scoreboard-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.scoreboard-board{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:15px}.score-side{background:linear-gradient(180deg,#1b1628,#100c17);border:1px solid var(--line);border-radius:20px;padding:24px;text-align:center;min-height:320px;display:flex;flex-direction:column;justify-content:center}.score-side h2{font-size:24px;margin:0 0 15px}.score-big{font-size:100px;line-height:1;font-weight:900;margin:8px 0 20px}.score-controls{display:flex;justify-content:center;gap:8px}.score-controls .btn{min-width:70px;font-size:22px;padding:11px 16px}.score-submit{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:15px}.score-meta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px}.serving-banner{text-align:center;border-color:#6b48a0}.serving-label{font-size:12px;color:#aaa0bb;text-transform:uppercase;letter-spacing:1px}.serving-team{font-size:25px;font-weight:900;margin-top:5px}.server-indicator{display:inline-block;margin-top:8px;padding:6px 12px;border-radius:999px;background:#21163a;border:1px solid #6b48a0;font-weight:800}.score-call{font-size:48px;font-weight:900;letter-spacing:2px;margin-top:12px}.serving-side{box-shadow:0 0 0 2px #8b5cf6 inset}.team-tag{font-size:12px;font-weight:800;color:#aaa0bb}.rally-panel{text-align:center}.rally-title{font-weight:900;font-size:13px;letter-spacing:1px}.rally-buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}.rally-btn{font-size:17px;padding:14px 18px}.rally-help{margin-top:10px;font-size:12px}.score-meta b{color:#fff}.score-meta span{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#171321;color:var(--muted);font-size:12px}.score-empty{padding:45px 20px;text-align:center}.score-undo{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:12px}.score-undo .btn{min-width:110px}.score-undo .undo-count{font-size:12px;color:var(--muted);padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#171321}.tour-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}.tour-stat{padding:12px;background:#0f0c15;border:1px solid var(--line);border-radius:12px}.tour-stat b{display:block;font-size:18px;margin-top:4px}.match.pending{border-color:#6b48a0;box-shadow:0 0 0 1px #8b5cf61a}.match .slot.winner-slot{background:#102419;border-radius:7px}.match .enter-result{width:100%;margin-top:9px}.match-scoreline{font-size:12px;color:var(--muted);margin-top:6px}.tour-toolbar{display:flex;gap:18px;align-items:end;flex-wrap:wrap}.tour-field{min-width:180px}.tour-field select{width:100%;background:#0e0b14;color:white;border:1px solid var(--line);border-radius:10px;padding:10px}
+@media(max-width:700px){.scoreboard-board{grid-template-columns:1fr}.score-big{font-size:78px}.tour-summary{grid-template-columns:1fr 1fr}}
+/* v18 dynamic broadcast UI */
+.sports-ticker{position:sticky;top:0;z-index:8;width:100%;height:34px;overflow:hidden;border:1px solid #3b2a51;border-radius:12px;background:rgba(9,7,15,.88);backdrop-filter:blur(12px);box-shadow:0 8px 28px rgba(0,0,0,.18);display:flex;align-items:center;margin-bottom:9px}
+.ticker-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 12px;font-size:10px;font-weight:900;letter-spacing:1px;color:#e9ddff;background:linear-gradient(90deg,#5b21b6,#8b5cf6);border-right:1px solid #a78bfa55;position:relative;z-index:2}
+.ticker-window{position:relative;overflow:hidden;flex:1;height:100%}
+.ticker-track{display:flex;align-items:center;width:max-content;height:100%;animation:tickerScroll 78s linear infinite;will-change:transform}
+.ticker-set{display:flex;align-items:center;flex-shrink:0}
+.ticker-item{white-space:nowrap;padding:0 22px;font-size:11px;color:#ddd4eb;letter-spacing:.15px}
+.ticker-item strong{color:#fff}.ticker-item .ticker-win{color:#f6c76a;font-weight:900;text-shadow:0 0 10px #f59e0b33}.ticker-item .ticker-score{color:#fff;font-weight:900}.ticker-item .ticker-upcoming{color:#c4b5fd;font-weight:800}.ticker-sep{color:#7c6a91;padding:0 2px}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* A continuous moving glow, like a broadcast light sweep. */
+.ambient-beam{position:fixed;left:-45vw;width:52vw;height:10px;border-radius:999px;pointer-events:none;z-index:-1;filter:blur(12px);opacity:.34;background:linear-gradient(90deg,transparent,#6d28d9,#c084fc,#8b5cf6,transparent);box-shadow:0 0 38px 10px #8b5cf622;animation:screenMarquee 15s linear infinite}
+.ambient-beam.one{top:17vh}.ambient-beam.two{top:68vh;height:7px;opacity:.22;animation-duration:21s;animation-delay:-7s;animation-direction:reverse}
+@keyframes screenMarquee{0%{transform:translateX(0) scaleX(.82)}50%{transform:translateX(190vw) scaleX(1.18)}100%{transform:translateX(390vw) scaleX(.82)}}
+/* Polished, meaning-preserving button hover states. */
+.btn,.nav{transition:background .22s ease,border-color .22s ease,color .22s ease,box-shadow .22s ease,transform .18s ease,filter .22s ease}
+.btn:not(:disabled):hover,.nav:not(:disabled):hover{transform:translateY(-2px);border-color:#76549b;box-shadow:0 7px 20px rgba(0,0,0,.24),0 0 0 1px #8b5cf61a;filter:brightness(1.08)}
+.nav:not(.active):not(:disabled):hover{background:linear-gradient(135deg,#211936,#2a2040);color:#fff}
+.nav.active:hover,.btn.primary:not(:disabled):hover{background:linear-gradient(135deg,#7c3aed,#a78bfa);border-color:#b89cff;box-shadow:0 8px 24px #6d28d944,0 0 18px #8b5cf633}
+.btn.success:not(:disabled):hover{background:linear-gradient(135deg,#12351f,#166534);border-color:#4ade80;color:#bbf7d0;box-shadow:0 8px 20px #22c55e22,0 0 14px #22c55e1c}
+.btn.danger:not(:disabled):hover{background:linear-gradient(135deg,#3a1620,#6f1d2a);border-color:#fb7185;color:#fecdd3;box-shadow:0 8px 20px #ef444422,0 0 14px #ef44441a}
+.btn:disabled{cursor:not-allowed;opacity:.45;transform:none!important;box-shadow:none!important;filter:none!important}
+@media(prefers-reduced-motion:reduce){.ticker-track,.ambient-beam{animation:none}.ticker-track{transform:none}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sports-ticker" aria-label="Recent match results and upcoming matches"><div class="ticker-label">🏓 MATCH CENTER</div><div class="ticker-window"><div class="ticker-track" id="sportsTickerTrack"><div class="ticker-set"><span class="ticker-item"><strong>J's Picklehub</strong><span class="ticker-sep"> • </span>Loading recent results…</span></div><div class="ticker-set"><span class="ticker-item"><strong>J's Picklehub</strong><span class="ticker-sep"> • </span>Loading recent results…</span></div></div></div></div>
+<div class="ambient-beam one"></div><div class="ambient-beam two"></div>
+<header>
+<div class="brand"><div class="logo">🏓</div><div><h1>J's Pickleball Hub </h1><small>• Round Robin + Tournament Mode • Enhanced v26 • </small></div></div>
+<nav><button class="nav active" data-page="dashboard">Dashboard</button><button class="nav" data-page="game">Current Game</button><button class="nav" data-page="scoreboard">📟 Scoreboard</button><button class="nav" data-page="players">Players</button><button class="nav" data-page="history">History</button><button class="nav" data-page="stats">Stats</button><button class="nav" data-page="tournament">🏆 Tournament</button><button class="nav" data-page="scoring">🏓 Information</button></nav>
+</header>
+<main>
+<section id="dashboard" class="page active">
+<div class="hero"><div><h2>🏆 Game Center</h2><p>A quick look at your current session, games, players, and rotation.</p></div><button class="btn danger" id="reset">🏁 Reset Tournament</button></div><div class="panel session-panel" style="margin-top:15px"><div><div class="label">PLAY SESSION</div><div id="sessionName" style="font-size:20px;font-weight:800;margin-top:4px">No active session</div><div id="sessionMeta" class="muted" style="margin-top:4px">Start a session before generating games or tournaments.</div></div><div class="actions" style="align-items:center"><label class="muted" style="font-size:12px">COURTS <select id="courtCount" class="court-select"><option value="1">1 Court</option><option value="2">2 Courts</option><option value="3">3 Courts</option><option value="4">4 Courts</option></select></label><button class="btn primary" id="newSession">＋ New Session</button><button class="btn" id="endSession">End Session</button></div></div>
+<div class="cards"><div class="card"><div class="label">Active Players</div><div class="value" id="dPlayers">0</div></div><div class="card"><div class="label">Games Played</div><div class="value" id="dGames">0</div></div><div class="card"><div class="label">Total Points</div><div class="value" id="dPoints">0</div></div><div class="card"><div class="label">Current Round</div><div class="value" id="dRound">0</div></div></div>
+<div class="cards"><div class="card"><div class="label">Top MMR</div><div class="value" id="dLeader" style="font-size:22px">—</div></div><div class="card"><div class="label">Highest Win %</div><div class="value" id="dBest">0.00%</div></div><div class="card"><div class="label">Most Points</div><div class="value" id="dPF">0</div></div><div class="card"><div class="label">Average Win %</div><div class="value" id="dAvg">0.00%</div></div></div>
+<div class="section"><h2>🎲 Upcoming Rotation</h2><div class="actions"><button class="btn primary" id="generate">Generate 3 Games</button><button class="btn" id="queueSingles">＋ Queue 1v1</button></div></div><div id="dashRotation"></div>
+<div class="section"><h2>🏆 Leaderboard</h2><span class="muted">Wins → Win % → Point Difference</span></div><div id="dashStats"></div>
+</section>
+
+
+<section id="scoreboard" class="page">
+<div class="hero"><div><h2>📟 Live Scoreboard</h2><p>Use this screen while playing. Submit the final score when the game is finished.</p></div><button class="btn" id="scoreboardBack">Current Game</button></div>
+<div id="scoreboardContent"></div>
+</section>
+
+<section id="game" class="page">
+<div class="hero"><div><h2 id="gameHead">🎾 CURRENT GAME</h2><p id="gameSub">Generate a rotation to begin.</p></div><div class="actions"><button class="btn primary" id="generate2">🎲 Generate 3 Games</button><button class="btn" id="queueSingles2">＋ Queue 1v1</button></div></div><div id="gameContent"></div>
+</section>
+
+<section id="players" class="page">
+<div class="hero"><div><h2>👥 Players</h2><p>Active players are included in the pairing engine.</p></div></div>
+<div class="panel"><div class="form"><input id="newPlayer" type="text" placeholder="Player name"><button class="btn primary" id="add">＋ Add Player</button></div></div>
+<div class="section"><h2>Roster</h2><span class="muted" id="count"></span></div><div id="playersList" class="player-grid"></div>
+</section>
+
+<section id="history" class="page"><div class="hero"><div><h2>📜 Game History</h2><p>Recorded results stay in this browser.</p></div><button class="btn danger" id="clearHistory">🗑️ Clear History</button></div><div class="panel"><div class="section" style="margin-top:0"><h2>📤 Session Export</h2><span class="muted">Export a finished or current session with its stats and match history.</span></div><div class="export-bar"><div class="tour-field"><div class="label">Session</div><select id="exportSession"></select></div><button class="btn primary" id="exportPdf">📄 Export PDF</button><button class="btn" id="exportJpeg">🖼️ Export JPEG</button></div><div class="muted" style="margin-top:9px;font-size:12px">The PDF is a downloadable report, while JPEG creates a shareable image of the same session summary.</div></div><div id="historyContent" style="margin-top:15px"></div></section>
+<section id="stats" class="page"><div class="hero"><div><h2>📊 Player Stats</h2><p>MMR starts at 500 and changes by the point difference of every completed game.</p></div></div><div id="statsContent" style="margin-top:15px"></div></section>
+
+<section id="tournament" class="page">
+<div class="hero"><div><h2>🏆 Tournament Mode</h2><p>Choose singles or doubles, pairing style, and tournament format.</p></div>
+<div class="actions"><button class="btn primary" id="startTournament">Start / Rebuild Tournament</button><button class="btn danger" id="resetTournament">Reset Bracket</button></div></div>
+<div class="panel">
+<div class="tour-toolbar">
+<div class="tour-field"><div class="label">Tournament Type</div><select id="tournamentType"><option value="singles">👤 Singles</option><option value="doubles">🏓 Doubles</option></select></div>
+<div class="tour-field"><div class="label">Tournament Format</div><select id="tournamentFormat"><option value="single">🏆 Single Elimination</option><option value="winners_losers">🔀 Winner vs Winner / Loser vs Loser</option><option value="swiss">🧩 Swiss</option></select></div>
+<div class="tour-field"><div class="label">Initial Pairings</div><select id="pairingMode"><option value="random">🎲 Random Pairings</option><option value="custom">✏️ Create My Own Pairings</option></select></div>
+<div><div class="label">Status</div><div id="tournamentStatus" class="value" style="font-size:20px">Not started</div></div>
+</div>
+<div class="muted" id="tournamentMeta" style="margin-top:10px"></div><div id="pairingSetup"></div>
+</div>
+<div id="bracketContent" style="margin-top:15px"></div>
+</section>
+
+<section id="scoring" class="page">
+<div class="hero"><div><h2>🏓 Information About Pickleball</h2><p>Quick reference for how pickleball is played, including gameplay and scoring.</p></div></div>
+<div class="cards">
+<div class="card"><div class="label">Players</div><div class="value" style="font-size:22px">Singles or Doubles</div><div class="muted" style="margin-top:6px">Play 1 vs 1 or 2 vs 2.</div></div>
+<div class="card"><div class="label">Typical Game</div><div class="value" style="font-size:22px">First to 11</div><div class="muted" style="margin-top:6px">Usually win by 2; tournament games may use 15 or 21.</div></div>
+<div class="card"><div class="label">Two-Bounce Rule</div><div class="value" style="font-size:22px">Serve → Bounce</div><div class="muted" style="margin-top:6px">The serve and return must each bounce once before volleys.</div></div>
+<div class="card"><div class="label">Kitchen / NVZ</div><div class="value" style="font-size:22px">7 ft</div><div class="muted" style="margin-top:6px">No volleying while standing in the non-volley zone.</div></div>
+</div>
+<div class="section"><h2>🎾 How the Game Is Played</h2></div>
+<div class="panel">
+<ol style="line-height:1.85;margin:0;padding-left:24px">
+<li><b>Set up the court.</b> Pickleball is played on a court divided by a net, with a non-volley zone (the “Kitchen”) extending 7 feet from the net on each side.</li>
+<li><b>Choose the starting side and server.</b> A fair method such as a coin toss can determine who serves or receives first.</li>
+<li><b>Serve diagonally.</b> The server serves from behind the baseline into the opponent’s diagonal service court. Only one serve attempt is allowed under the standard rules.</li>
+<li><b>Follow the two-bounce rule.</b> The receiving team lets the serve bounce, then returns it. The serving team must also let that return bounce before playing it back. After one bounce on each side, players may volley or let the ball bounce.</li>
+<li><b>Continue the rally.</b> Players hit the ball back and forth until a fault occurs or the ball becomes dead. Players may move around their side of the court, including the Kitchen, as long as they follow the volley restrictions.</li>
+<li><b>Respect the Kitchen.</b> A player may stand in the Kitchen, but may not volley while standing in it or while momentum from a volley carries them into it.</li>
+<li><b>End the rally.</b> Common faults include hitting the ball into the net, hitting it out, serving into the wrong area, violating the two-bounce rule, volleying from the Kitchen, or other rule violations.</li>
+<li><b>Continue serving or side out.</b> In traditional scoring, the serving side scores when it wins a rally. If the serving side loses the rally, service passes according to the singles/doubles service sequence.</li>
+<li><b>Win the game.</b> Games are commonly played to 11 and must normally be won by 2 points. Tournament formats may use 15 or 21.</li>
+</ol>
+</div>
+<div class="section"><h2>🏓 Doubles Gameplay &amp; Serving Sequence</h2></div>
+<div class="panel">
+<ul style="line-height:1.8;margin:0;padding-left:22px">
+<li>Both players on the serving team normally have an opportunity to serve and score until their team commits a fault.</li>
+<li>At the start of a traditional doubles game, the first serving team has only one server, which is why the opening call is <b>0–0–2</b>.</li>
+<li>After the first service sequence, a side-out normally passes the serve to the other team, whose first server begins at Server 1.</li>
+<li>When the serving team wins a rally, it scores a point and the same server serves from the opposite service court.</li>
+<li>When the serving team loses a rally, Server 1 gives the serve to Server 2; when Server 2 loses the rally, it becomes a side-out.</li>
+<li>The traditional doubles score is called as <b>Serving Team Score – Receiving Team Score – Server Number</b>.</li>
+</ul>
+</div>
+<div class="section"><h2>📋 Scoring System</h2></div>
+<div class="cards">
+<div class="card"><div class="label">Traditional / Side-Out</div><div class="value" style="font-size:22px">Serving Side Scores</div><div class="muted" style="margin-top:6px">Only the serving team scores a point when it wins the rally.</div></div>
+<div class="card"><div class="label">Rally Scoring</div><div class="value" style="font-size:22px">Every Rally</div><div class="muted" style="margin-top:6px">A point is awarded to the side that wins every rally.</div></div>
+<div class="card"><div class="label">Score Call</div><div class="value" style="font-size:22px">0–0–2</div><div class="muted" style="margin-top:6px">Traditional doubles starts with Server 2 for scoring purposes.</div></div>
+<div class="card"><div class="label">Win Condition</div><div class="value" style="font-size:22px">Win by 2</div><div class="muted" style="margin-top:6px">If tied at the target score, continue until a 2-point lead.</div></div>
+</div>
+<div class="section"><h2>⚠️ Common Faults</h2></div>
+<div class="panel">
+<ul style="line-height:1.8;margin:0;padding-left:22px">
+<li>Serve lands outside the correct diagonal service court.</li>
+<li>Ball is hit into the net or out of bounds.</li>
+<li>Ball is volleyed before it has bounced once on each side after the serve.</li>
+<li>A player volleys while in the Kitchen or is carried into the Kitchen by momentum after a volley.</li>
+<li>The ball bounces twice on one side before it is returned.</li>
+<li>A player, clothing, or paddle touches the net or net post while the ball is in play.</li>
+</ul>
+</div>
+<div class="section"><h2>💡 Quick Beginner Tips</h2></div>
+<div class="panel">
+<ul style="line-height:1.8;margin:0;padding-left:22px">
+<li>Call the score before each serve.</li>
+<li>After serving, expect the return to bounce before you volley.</li>
+<li>Do not rush into the Kitchen before the two-bounce sequence is complete.</li>
+<li>Keep shots controlled and aim for safe areas rather than trying to hit every ball hard.</li>
+<li>Communicate with your partner about balls in the middle and line calls.</li>
+</ul>
+</div>
+<div class="muted" style="margin-top:12px">Rules reference: USA Pickleball official rules and beginner rules summary.</div>
+</section>
+</main></div><div id="toast" class="toast"></div>
+
+<script>
+const KEY="pickleballHub_3game_v1";
+const empty={players:[],games:[],sessions:[],session:null,round:0,current:null,liveGames:[],scoreboards:{},rotation:[],courts:1,
+tournament:{started:false,type:"singles",format:"single",pairingMode:"random",draft:[],participants:[],rounds:[],wbRounds:[],lbRounds:[],grandFinal:null,grandFinalReset:false,grandFinalResetMatch:null,champion:null,nextId:1,standings:[]}};
+let S=load();
+function load(){
+try{
+ let raw=JSON.parse(localStorage.getItem(KEY))||{};
+ let s=Object.assign({},empty,raw);
+ s.players=s.players||[];s.games=s.games||[];s.sessions=s.sessions||[];s.rotation=s.rotation||[];s.liveGames=Array.isArray(s.liveGames)?s.liveGames:[];s.scoreboards=s.scoreboards&&typeof s.scoreboards==="object"?s.scoreboards:{};if(!s.liveGames.length&&s.current)s.liveGames=[s.current];s.current=null;s.courts=Math.max(1,Math.min(4,Number(s.courts)||1));if(s.session&&!s.session.courts)s.session.courts=s.courts;
+ s.games.forEach(g=>{if(!g.sessionId)g.sessionId="legacy"});
+ if(!s.sessions.some(x=>x.id==="legacy") && s.games.some(g=>g.sessionId==="legacy"))s.sessions.unshift({id:"legacy",name:"Previous / Legacy Games",startedAt:null,endedAt:null});
+ s.players.forEach(p=>{if(typeof p.mmr!=="number")p.mmr=500;if(typeof p.startingMMR!=="number")p.startingMMR=500});
+ s.tournament=Object.assign({},empty.tournament,s.tournament||{});
+ if(!s.tournament.type)s.tournament.type="singles";
+ if(!s.tournament.format)s.tournament.format="single";
+ if(!s.tournament.pairingMode)s.tournament.pairingMode="random";
+ if(!Array.isArray(s.tournament.draft))s.tournament.draft=[];
+ return s;
+}catch(e){return JSON.parse(JSON.stringify(empty))}
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(S))}
+function esc(x){return String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function toast(x){let e=document.getElementById("toast");e.textContent=x;e.style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>e.style.display="none",2200)}
+function currentSessionId(){return S.session?.id||null}
+function sessionGames(){let id=currentSessionId();return id?S.games.filter(g=>g.sessionId===id):S.games}
+function requireSession(){if(!S.session){toast("Start a play session first.");show("dashboard");return false}return true}
+function newSession(){
+ if(S.liveGames.length){toast("Finish or cancel all live games before starting a new session.");return}
+ let name=prompt("Session name:","Pickleball Session "+(S.sessions.length+1));if(name===null)return;name=name.trim();if(!name){toast("Session name cannot be empty.");return}
+ let id="s"+Date.now();let courts=Math.max(1,Math.min(4,Number(document.getElementById("courtCount")?.value||S.courts||1)));S.courts=courts;S.session={id,name,startedAt:new Date().toISOString(),courts};S.sessions.unshift({id,name,startedAt:S.session.startedAt,endedAt:null});
+ S.round=0;S.rotation=[];S.liveGames=[];S.current=null;S.scoreboards={};S.scoreboard=null;
+ S.players.forEach(p=>{p.mmr=500;p.startingMMR=500});
+ let type=document.getElementById("tournamentType")?.value||"singles";S.tournament=JSON.parse(JSON.stringify(empty.tournament));S.tournament.type=type;S.tournament.pairingMode="random";S.tournament.draft=pairingDraft(type);
+ save();render();show("dashboard");toast(name+" started. MMR reset to 500.");
+}
+function endSession(){
+ if(!S.session){toast("There is no active session.");return}
+ if(S.liveGames.length && !confirm("Live games are still active. End the session anyway? The unfinished games will be discarded."))return;
+ let rec=S.sessions.find(x=>x.id===S.session.id);if(rec){rec.endedAt=new Date().toISOString();rec.mmrByPlayer=Object.fromEntries(S.players.map(p=>[p.name,Number(p.mmr??500)]));}
+ S.session=null;S.current=null;S.liveGames=[];S.rotation=[];S.scoreboards={};S.scoreboard=null;S.round=0;
+ save();render();show("dashboard");toast("Session ended. Your history is preserved.");
+}
+function active(){return S.players.filter(p=>p.active).map(p=>p.name)}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function pair(a,b){return[a,b].sort().join("|")}
+function group(a){return[...a].sort().join("|")}
+function show(id){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===id));document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===id))}
+
+function stats(){
+let a=S.players.map(p=>{
+ let games=0,wins=0,losses=0,pf=0,pa=0;
+ sessionGames().forEach(g=>{
+  let t1=g.team1.includes(p.name),t2=g.team2.includes(p.name);if(!t1&&!t2)return;
+  games++;let w=t1?g.winner===1:g.winner===2;if(w)wins++;else losses++;
+  if(t1){pf+=g.s1;pa+=g.s2}else{pf+=g.s2;pa+=g.s1}
+ });
+ return{name:p.name,games,wins,losses,pf,pa,diff:pf-pa,pct:games?wins/games:0,mmr:Number(p.mmr??500)}
+});
+return a.sort((x,y)=>y.wins-x.wins||y.pct-x.pct||y.diff-x.diff||x.name.localeCompare(y.name))
+ .map((x,i)=>({...x,rank:i+1}))
+}
+
+function liveGames(){return Array.isArray(S.liveGames)?S.liveGames:[]}
+function getLiveGame(court){return liveGames().find(g=>Number(g.court)===Number(court))||null}
+function livePlayers(excludeCourt=null){let a=[];liveGames().forEach(g=>{if(excludeCourt!=null&&Number(g.court)===Number(excludeCourt))return;a.push(...g.team1,...g.team2)});return a}
+function startAvailableGames(){
+ if(!S.session)return;
+ let courts=Math.max(1,Math.min(4,Number(S.courts)||1));
+ for(let court=1;court<=courts;court++){
+  if(getLiveGame(court)||!S.rotation.length)continue;
+  let occupied=new Set(livePlayers());
+  let idx=S.rotation.findIndex(g=>![...g.team1,...g.team2].some(p=>occupied.has(p)));
+  if(idx<0)continue;
+  let g=S.rotation.splice(idx,1)[0];
+  g.court=court;S.liveGames.push({...g});S.round=Math.max(S.round,Number(g.round)||0);
+  S.scoreboards[String(court)]={gameRound:g.round,scoreA:0,scoreB:0,servingTeam:"A",serverNumber:2,undoStack:[]};
+ }
+}
+function completeLiveGame(court,a,b,source="manual"){
+ let g=getLiveGame(court);if(!g){toast("There is no active game on Court "+court+".");return false}
+ a=Number(a);b=Number(b);
+ if(!Number.isFinite(a)||!Number.isFinite(b)){toast("Enter both scores.");return false}
+ if(a<0||b<0){toast("Scores cannot be negative.");return false}
+ if(a===b){toast("A game cannot end in a tie.");return false}
+ applyMMRPointDifference(g.team1,g.team2,a,b);
+ S.games.push({...g,s1:a,s2:b,winner:a>b?1:2,pointDiff:Math.abs(a-b),time:new Date().toISOString(),sessionId:currentSessionId(),source,scoring:source==="scoreboard"?"traditional-doubles-sideout":undefined});
+ S.tickerCleared=false;
+ S.liveGames=S.liveGames.filter(x=>Number(x.court)!==Number(court));delete S.scoreboards[String(court)];
+ startAvailableGames();save();render();return true;
+}
+
+function queueSinglesDialog(){
+ if(!requireSession())return;
+ const ps=active();
+ if(ps.length<2){toast("You need at least 2 active players for a 1v1 game.");return;}
+ document.getElementById("singlesQueueModal")?.remove();
+ const options=ps.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("");
+ const wrap=document.createElement("div");wrap.id="singlesQueueModal";wrap.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:18px";
+ wrap.innerHTML=`<div class="panel" role="dialog" aria-modal="true" aria-labelledby="singlesQueueTitle" style="width:min(440px,100%);padding:22px;box-shadow:0 20px 70px #0009"><h2 id="singlesQueueTitle" style="margin-top:0">👤 Queue a Singles Game (1v1)</h2><p class="muted">Choose two active players. The game will be added to the end of your current queue.</p><div style="display:grid;gap:12px"><label>Player 1<select id="singlesPlayerA" class="court-select" style="width:100%;margin-top:5px">${options}</select></label><label>Player 2<select id="singlesPlayerB" class="court-select" style="width:100%;margin-top:5px">${options}</select></label></div><div class="actions" style="justify-content:flex-end;margin-top:18px"><button class="btn" id="cancelSinglesQueue">Cancel</button><button class="btn primary" id="confirmSinglesQueue">Add 1v1 to Queue</button></div></div>`;
+ document.body.appendChild(wrap);
+ const a=wrap.querySelector("#singlesPlayerA"),b=wrap.querySelector("#singlesPlayerB");if(ps.length>1)b.selectedIndex=1;
+ wrap.querySelector("#cancelSinglesQueue").onclick=()=>wrap.remove();
+ wrap.onclick=e=>{if(e.target===wrap)wrap.remove()};
+ wrap.querySelector("#confirmSinglesQueue").onclick=()=>{
+  const p1=a.value,p2=b.value;if(!p1||!p2||p1===p2){toast("Choose two different players for singles.");return;}
+  const round=Math.max(S.round,...S.rotation.map(g=>Number(g.round)||0),...liveGames().map(g=>Number(g.round)||0),...sessionGames().map(g=>Number(g.round)||0))+1;
+  const g={round,team1:[p1],team2:[p2],waiting:ps.filter(p=>p!==p1&&p!==p2),court:((round-1)%Math.max(1,S.courts||1))+1,isSingles:true};
+  S.rotation.push(g);wrap.remove();startAvailableGames();save();render();show("game");toast(`Singles Game ${round} queued: ${p1} vs ${p2}.`);
+ };
+}
+
+function buildRotation(count=3,startRound=null){
+ if(!requireSession())return null;
+ const ps=active();
+ if(ps.length<4){toast("You need at least 4 active players.");return null}
+ count=Math.max(0,Number(count)||0); if(!count)return [];
+ const courts=Math.max(1,Number(S.courts)||1);
+ const roundStart=startRound==null?Math.max(S.round,...S.rotation.map(g=>Number(g.round)||0),...liveGames().map(g=>Number(g.round)||0),...sessionGames().map(g=>Number(g.round)||0))+1:Number(startRound);
+
+ // Keep already-live/queued games as the source of truth.  A new generation
+ // only creates the missing suffix; it never rewrites the games that are
+ // already on the board.
+ const existing=[...liveGames().sort((a,b)=>Number(a.round)-Number(b.round)),...S.rotation.slice().sort((a,b)=>Number(a.round)-Number(b.round))];
+ let groups=existing.map(g=>[...g.team1,...g.team2].filter(p=>ps.includes(p)));
+ groups=groups.filter(g=>g.length===4);
+
+ // If there is no existing sequence, establish a stable randomized order once.
+ // This order becomes the interval order for this generated rotation.
+ let order=[];
+ if(groups.length){
+   order=[...new Set(groups.flat())];
+   // Put never-used active players next; they are the highest priority for
+   // the interval engine when the roster is larger than the already planned set.
+   let never=ps.filter(p=>!order.includes(p));
+   order.push(...shuffle(never));
+   let remaining=ps.filter(p=>!order.includes(p)); order.push(...remaining);
+ }else{
+   order=shuffle(ps);
+ }
+
+ const hist=sessionGames();
+ const pairCount={},partnerCount={},opponentCount={},groupCount={};
+ const playCount={}; ps.forEach(p=>playCount[p]=0);
+ const addModel=(g)=>{
+   const a=[...g.team1,...g.team2];
+   a.forEach(p=>playCount[p]=(playCount[p]||0)+1);
+   groupCount[group(a)]=(groupCount[group(a)]||0)+1;
+   const p1=pair(g.team1[0],g.team1[1]),p2=pair(g.team2[0],g.team2[1]);
+   partnerCount[p1]=(partnerCount[p1]||0)+1; partnerCount[p2]=(partnerCount[p2]||0)+1;
+   for(const x of g.team1)for(const y of g.team2){const k=pair(x,y);opponentCount[k]=(opponentCount[k]||0)+1}
+   for(let i=0;i<a.length;i++)for(let j=i+1;j<a.length;j++){const k=pair(a[i],a[j]);pairCount[k]=(pairCount[k]||0)+1}
+ };
+ hist.forEach(addModel); existing.forEach(addModel);
+
+ function bestTeams(c){
+   const splits=[[[c[0],c[1]],[c[2],c[3]]],[[c[0],c[2]],[c[1],c[3]]],[[c[0],c[3]],[c[1],c[2]]]];
+   let best=null;
+   for(const t of splits){
+     let score=0;
+     score+=(partnerCount[pair(t[0][0],t[0][1])]||0)*1000;
+     score+=(partnerCount[pair(t[1][0],t[1][1])]||0)*1000;
+     for(const x of t[0])for(const y of t[1])score+=(opponentCount[pair(x,y)]||0)*260;
+     // Favor equal game counts, then randomize equally good splits.
+     score+=c.reduce((n,p)=>n+(playCount[p]||0),0)*0.01+Math.random()*0.05;
+     if(!best||score<best.score)best={teams:t,score};
+   }
+   return best.teams;
+ }
+ function chooseMixed(gA,gB,nA,nB,avoid){
+   let candidates=[];
+   const A=shuffle(gA),B=shuffle(gB);
+   for(let i=0;i<A.length;i++)for(let j=i+1;j<A.length;j++)for(let k=0;k<B.length;k++)for(let l=k+1;l<B.length;l++){
+     const c=[A[i],A[j],B[k],B[l]];
+     if(avoid&&c.some(p=>avoid.has(p)))continue;
+     candidates.push(c);
+   }
+   if(!candidates.length){
+     for(let i=0;i<A.length;i++)for(let j=i+1;j<A.length;j++)for(let k=0;k<B.length;k++)for(let l=k+1;l<B.length;l++)candidates.push([A[i],A[j],B[k],B[l]]);
+   }
+   candidates=shuffle(candidates);
+   candidates.sort((x,y)=>{
+     const sx=x.reduce((n,p)=>n+(playCount[p]||0),0),sy=y.reduce((n,p)=>n+(playCount[p]||0),0);
+     return sx-sy;
+   });
+   return candidates[0];
+ }
+ function makeGame(c,round){
+   const teams=bestTeams(c),waiting=ps.filter(p=>!c.includes(p));
+   const g={round,team1:teams[0].slice(),team2:teams[1].slice(),waiting,court:((round-1)%courts)+1};
+   addModel(g); return g;
+ }
+
+ let out=[];
+ // Build the missing suffix one game at a time. The key interval rules are
+ // explicit instead of being left to a scoring optimizer:
+ // 12 players: G1=group1, G2=group2, G3=group3, G4=2 from G1 + 2 from G2.
+ // 14 players: G1/G2/G3 are the first three groups; G4=the final 2 + 2 from G1.
+ // For later games, rotate the source groups so one block is not repeated.
+ let sourceGroups=groups.slice();
+ while(sourceGroups.length<3){
+   const used=new Set(sourceGroups.flat());
+   const fresh=order.filter(p=>!used.has(p));
+   if(fresh.length>=4){sourceGroups.push(fresh.slice(0,4));continue}
+   // Fill a missing group with the lowest-count players not in the immediate
+   // previous group. This only applies when the roster has fewer than 12.
+   const prev=new Set(sourceGroups.at(-1)||[]);
+   const pool=shuffle(ps.filter(p=>!prev.has(p))).sort((a,b)=>(playCount[a]||0)-(playCount[b]||0));
+   sourceGroups.push(pool.slice(0,4));
+ }
+ let logicalRound=sourceGroups.length?Math.max(...existing.map(g=>Number(g.round)||0),roundStart-1)+1:roundStart;
+ // Determine the next group according to the current generated sequence.
+ for(let n=0;n<count;n++){
+   const r=logicalRound+n;
+   let c=null;
+   const total=ps.length;
+   if(total===12){
+     const idx=r-roundStart;
+     // If the already-existing sequence contains G1-G3, the first missing game
+     // is the special mixed G4. For a fresh generation this also handles G4.
+     const cyclePos=(r-1)%6;
+     if(sourceGroups.length>=3 && (r===4 || (idx===3 && existing.length===0))){
+       c=chooseMixed(sourceGroups[0],sourceGroups[1],2,2,new Set(sourceGroups[2]));
+     }else if(sourceGroups.length>=3 && r>4){
+       // Alternate the two source groups feeding the next interval while
+       // protecting the immediately previous game's players.
+       const a=sourceGroups[(r-4)%3],b=sourceGroups[(r-3)%3];
+       c=chooseMixed(a,b,2,2,new Set(out.length?out.at(-1):(existing.length?[...existing.at(-1).team1,...existing.at(-1).team2]:[])));
+     }else{
+       c=sourceGroups[(r-1)%3].slice();
+     }
+   }else if(total===14){
+     if(r===4){
+       const first=sourceGroups[0],used=new Set(sourceGroups.flat());
+       const lastTwo=order.filter(p=>!used.has(p));
+       c=lastTwo.slice(0,2).concat(shuffle(first).slice(0,2));
+     }else if(r<=3){c=sourceGroups[r-1].slice();}
+     else{
+       const a=sourceGroups[(r-4)%3],b=sourceGroups[(r-3)%3];
+       c=chooseMixed(a,b,2,2,new Set((out.at(-1)||[])));
+     }
+   }else if(total>=8){
+     // Generic long-interval rule: choose four lowest-count players while
+     // protecting the immediately previous game.
+     const prev=new Set((out.at(-1)||[]));
+     c=shuffle(ps.filter(p=>!prev.has(p))).sort((a,b)=>(playCount[a]||0)-(playCount[b]||0)).slice(0,4);
+     if(c.length<4)c=shuffle(ps).slice(0,4);
+   }else{
+     const prev=new Set(out.at(-1)||[]);
+     c=shuffle(ps.filter(p=>!prev.has(p))).slice(0,4);if(c.length<4)c=shuffle(ps).slice(0,4);
+   }
+   // Hard protection: never allow a player from the immediately preceding
+   // generated/live game when at least 8 active players exist.
+   const prevPlayers=out.length?[...out.at(-1)]:existing.length?[...existing.at(-1).team1,...existing.at(-1).team2]:[];
+   if(total>=8 && c.some(p=>prevPlayers.includes(p))){
+     const pool=shuffle(ps.filter(p=>!prevPlayers.includes(p)&&!c.includes(p)));
+     c=c.filter(p=>!prevPlayers.includes(p)).concat(pool).slice(0,4);
+   }
+   if(c.length<4)c=shuffle(ps).slice(0,4);
+   out.push(c);
+   // Maintain source groups for fresh generations.
+   if(sourceGroups.length<3 && !sourceGroups.some(x=>group(x)===group(c)))sourceGroups.push(c.slice());
+ }
+ // Convert the selected player groups into games only once.
+ let result=[];
+ for(let i=0;i<out.length;i++){
+   const teams=bestTeams(out[i]);
+   const g={round:logicalRound+i,team1:teams[0].slice(),team2:teams[1].slice(),waiting:ps.filter(p=>!out[i].includes(p)),court:((logicalRound+i-1)%courts)+1};
+   result.push(g); addModel(g);
+ }
+ return result;
+}
+
+function repairUpcomingConsecutive(){
+ if(!S.rotation.length)return false;
+ let ps=active();
+ if(ps.length<8)return false;
+ let changed=false;
+ let previous=liveGames().flatMap(g=>[...g.team1,...g.team2]);
+ if(!previous.length){let lastPlayed=sessionGames().at(-1);if(lastPlayed)previous=[...lastPlayed.team1,...lastPlayed.team2]}
+ // IMPORTANT: Do not re-randomize valid future games on every render.
+ // The interval engine owns the queue. We only repair an actual consecutive
+ // duplicate, and even then we rebuild the affected suffix through the same
+ // optimizer instead of using a second random pairing algorithm.
+ let badIndex=-1;
+ for(let i=0;i<S.rotation.length;i++){
+  let players=[...S.rotation[i].team1,...S.rotation[i].team2];
+  if(previous.some(p=>players.includes(p))){badIndex=i;break}
+  previous=players;
+ }
+ if(badIndex<0)return false;
+ let count=S.rotation.length-badIndex;
+ let startRound=Number(S.rotation[badIndex].round)||((S.round||0)+1);
+ let prefix=S.rotation.slice(0,badIndex);
+ S.rotation=prefix;
+ let rebuilt=buildRotation(count,startRound)||[];
+ S.rotation=prefix.concat(rebuilt);
+ changed=true;
+ return changed;
+}
+
+function generate(){
+ if(!requireSession())return;
+ // Roster changes never destroy the current queue. They only mark it for regeneration.
+ // When the user explicitly presses Generate 3 Games, rebuild the future queue
+ // from the updated active roster so newly added/deactivated players are reflected.
+ if(S.queueNeedsRegenerate){
+  const queuedSingles=S.rotation.filter(g=>g.isSingles);
+  const oldQueueRounds=S.rotation.map(g=>Number(g.round)||0);
+  S.rotation=[];
+  S.queueNeedsRegenerate=false;
+  let start=Math.max(S.round,...oldQueueRounds,...liveGames().map(g=>g.round||0),...sessionGames().map(g=>g.round||0))+1;
+  let r=buildRotation(3,start);if(!r){S.rotation=queuedSingles;S.queueNeedsRegenerate=true;save();render();return}
+  S.rotation=[...queuedSingles,...r];
+  startAvailableGames();save();render();show("game");
+  toast("Rotation regenerated with the updated player roster.");
+  return;
+ }
+ let target=3,need=Math.max(0,target-S.rotation.length);
+ if(!need){startAvailableGames();save();render();toast("You already have 3 upcoming games queued.");return}
+ let start=Math.max(S.round,...S.rotation.map(g=>g.round||0),...liveGames().map(g=>g.round||0))+1;
+ let r=buildRotation(need,start);if(!r)return;
+ S.rotation.push(...r);startAvailableGames();save();render();show("game");toast(need+" game"+(need===1?"":"s")+" added. Live courts have been filled automatically where possible.")
+}
+function playNext(court){
+ if(!requireSession())return;
+ if(court!=null){if(getLiveGame(court)){toast("Court "+court+" is already playing.");return}startAvailableGames();save();render();return}
+ startAvailableGames();save();render();show("game");
+}
+function applyMMRPointDifference(team1,team2,s1,s2){
+ let diff=Math.abs(Number(s1)-Number(s2));
+ if(!Number.isFinite(diff)||diff<=0)return;
+ let winner=Number(s1)>Number(s2)?team1:team2,loser=Number(s1)>Number(s2)?team2:team1;
+ let byName=new Map(S.players.map(p=>[p.name,p]));
+ winner.forEach(name=>{let p=byName.get(name);if(p)p.mmr=Math.max(0,Math.round(Number(p.mmr??500)+diff))});
+ loser.forEach(name=>{let p=byName.get(name);if(p)p.mmr=Math.max(0,Math.round(Number(p.mmr??500)-diff))});
+}
+function record(court){
+ let g=getLiveGame(court);if(!g){toast("There is no active game on Court "+court+".");return}
+ let a=Number(document.getElementById("s1-"+court)?.value),b=Number(document.getElementById("s2-"+court)?.value);
+ if(completeLiveGame(court,a,b,"manual"))toast("Game "+g.round+" on Court "+court+" recorded. The next eligible game has been assigned automatically.");
+}
+
+function repairUpcomingQueue(protectedNames=[]){
+ let ps=active(),live=liveGames().flatMap(g=>[...g.team1,...g.team2]);
+ let protectedSet=new Set([...live,...protectedNames]);
+ let previous=[...live];
+ S.rotation.forEach((g,idx)=>{
+  let all=[...g.team1,...g.team2],clean=[];
+  all.forEach(p=>{if(ps.includes(p)&&!clean.includes(p)&&!(idx===0&&protectedSet.has(p)))clean.push(p)});
+  let avoid=new Set(idx===0?[...protectedSet,...previous]:[...((S.rotation[idx-1]?.team1)||[]),...((S.rotation[idx-1]?.team2)||[])]);
+  let candidates=shuffle(ps.filter(p=>!clean.includes(p)));
+  if(ps.length>=8){let preferred=candidates.filter(p=>!avoid.has(p));candidates=preferred.concat(candidates.filter(p=>avoid.has(p)));}
+  while(clean.length<4&&candidates.length)clean.push(candidates.shift());
+  if(clean.length<4){let fallback=shuffle(ps.filter(p=>!clean.includes(p)&&!protectedSet.has(p)));while(clean.length<4&&fallback.length)clean.push(fallback.shift());}
+  if(clean.length<4){let fallback=shuffle(ps.filter(p=>!clean.includes(p)));while(clean.length<4&&fallback.length)clean.push(fallback.shift());}
+  g.team1=clean.slice(0,2);g.team2=clean.slice(2,4);g.waiting=ps.filter(p=>!clean.includes(p));
+  g.court=(idx%Math.max(1,S.courts||1))+1;previous=clean;
+ });
+}
+function rebuildFutureQueueAfterSwap(){
+ // Preserve explicitly queued singles games; the mixed queue order is intentional.
+ if(S.rotation.some(g=>g.isSingles))return;
+ // A swap changes the live lineup, so rebuild ONLY the queued games.
+ // The optimized rotation engine then recalculates interval, game balance,
+ // repeated partners/opponents, and 2v2 splits from the new live state.
+ if(!S.rotation.length)return;
+ let queuedCount=S.rotation.length;
+ let firstRound=Math.min(...S.rotation.map(g=>Number(g.round)||0));
+ if(!Number.isFinite(firstRound))firstRound=Math.max(1,(S.round||0)+1);
+ let oldRotation=S.rotation.slice();
+ S.rotation=[];
+ let rebuilt=buildRotation(queuedCount,firstRound)||[];
+ S.rotation=rebuilt;
+ startAvailableGames();
+}
+function adjustUpcomingAfterSwap(oldName,newName){
+ if(!newName||oldName===newName)return;
+ rebuildFutureQueueAfterSwap();
+}
+
+function swapCurrentPlayer(court,from,to){
+ let current=getLiveGame(court);
+ if(!current||!from||!to||from===to){toast("Choose a player and a different player sitting out.");return}
+ let playing=[...current.team1,...current.team2],sit=current.waiting||[];
+ if(!playing.includes(from)){toast("That player is not in the current game.");return}
+ if(playing.includes(to)||!sit.includes(to)){toast("Swap-in player must be sitting out.");return}
+ if(current.team1.includes(from))current.team1[current.team1.indexOf(from)]=to;else current.team2[current.team2.indexOf(from)]=to;
+ current.waiting=current.waiting.map(p=>p===to?from:p);
+ adjustUpcomingAfterSwap(from,to);startAvailableGames();save();render();
+ toast(from+" swapped with "+to+" on Court "+court+". Upcoming games adjusted.");
+}
+function swapPlayerRow(court,fromIndex,from){
+ let sel=document.getElementById(`inlineSwap-${court}-${fromIndex}`),to=sel?.value||"";
+ if(!to){toast("Choose a sitting-out player first.");return}
+ swapCurrentPlayer(court,from,to);
+}
+function cancelPlayerSwap(court,fromIndex){
+ let sel=document.getElementById(`inlineSwap-${court}-${fromIndex}`);if(sel)sel.value="";
+}
+function swapHTML(g){return "";}
+function livePlayerHTML(p,c,idx,sit){
+ let options=`<option value="">Swap with…</option>`+sit.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+ return `<div class="player swap-inline"><span class="player-label">👤 ${esc(p)}</span><select class="inline-swap-select" id="inlineSwap-${c}-${idx}" aria-label="Swap ${esc(p)} with">${options}</select><button class="swap-icon swap-confirm" data-swap-apply="${c}|${idx}|${esc(p)}" title="Apply swap" aria-label="Apply swap">✓</button><button class="swap-icon swap-cancel" data-swap-cancel="${c}|${idx}" title="Cancel swap" aria-label="Cancel swap">×</button></div>`;
+}
+
+function rotationHTML(){
+if(!S.rotation.length)return'<div class="panel empty">No upcoming games. All available courts are either playing or the queue is empty.</div>';
+return'<div class="rotation-grid">'+S.rotation.map((g,i)=>`<div class="rotation ${i===0?"next":""}"><div class="round">${i===0?"⏭️ NEXT QUEUED":"UPCOMING"} • GAME ${g.round} • ${g.isSingles?"SINGLES 1v1":"DOUBLES 2v2"}</div><h3>Waiting for an available court</h3><div class="mini p">${g.isSingles?"🔵":"🟣"} ${g.team1.map(esc).join(" / ")}</div><div class="mini g">${g.isSingles?"🟢":"🟢"} ${g.team2.map(esc).join(" / ")}</div><div class="sit">⏳ Sitting out</div><div class="chips">${g.waiting.length?g.waiting.map(x=>`<span>${esc(x)}</span>`).join(""):"<span>None</span>"}</div></div>`).join('')+'</div>'
+}
+function tableHTML(){
+let a=stats();if(!a.length)return'<div class="panel empty">No players yet.</div>';
+return'<div class="table"><table><thead><tr><th>Rank</th><th>Player</th><th>MMR</th><th>Games</th><th>Wins</th><th>Losses</th><th>Win %</th><th>Points For</th><th>Points Against</th><th>+/-</th></tr></thead><tbody>'+a.map(x=>`<tr class="${x.rank<=3?"r"+x.rank:""}"><td>${x.rank===1?"🥇":x.rank===2?"🥈":x.rank===3?"🥉":x.rank}</td><td><b>${esc(x.name)}</b></td><td><b>${x.mmr}</b></td><td>${x.games}</td><td>${x.wins}</td><td>${x.losses}</td><td><b>${(x.pct*100).toFixed(2)}%</b><div class="progress"><span style="width:${x.pct*100}%"></span></div></td><td>${x.pf}</td><td>${x.pa}</td><td>${x.diff>0?"+":""}${x.diff}</td></tr>`).join("")+'</tbody></table></div>'
+}
+
+function scoreValue(id){return Number(document.getElementById(id)?.value||0)}
+function initScoreboard(court){
+ let g=getLiveGame(court);if(!g)return null;
+ let key=String(court),sb=S.scoreboards[key];
+ if(!sb||sb.gameRound!==g.round){sb={gameRound:g.round,scoreA:0,scoreB:0,servingTeam:"A",serverNumber:2,undoStack:[]};S.scoreboards[key]=sb;}
+ if(!Array.isArray(sb.undoStack))sb.undoStack=[];
+ return sb;
+}
+function pushScoreUndo(sb){
+ if(!Array.isArray(sb.undoStack))sb.undoStack=[];
+ sb.undoStack.push({scoreA:sb.scoreA,scoreB:sb.scoreB,servingTeam:sb.servingTeam,serverNumber:sb.serverNumber});
+}
+function undoScore(court){
+ let sb=initScoreboard(court);if(!sb)return;
+ if(!sb.undoStack.length){toast("Nothing to undo.");return}
+ let prev=sb.undoStack.pop();sb.scoreA=prev.scoreA;sb.scoreB=prev.scoreB;sb.servingTeam=prev.servingTeam;sb.serverNumber=prev.serverNumber;save();renderScoreboard(court);toast("Scoreboard moved back one action.");
+}
+function renderScoreboard(court=null){
+ let e=document.getElementById("scoreboardContent"),games=liveGames();
+ if(!games.length){e.innerHTML=`<div class="panel score-empty"><div style="font-size:42px">📟</div><h2 style="margin:10px 0 6px">No Active Games</h2><div class="muted">Start or generate games from the Current Game screen.</div></div>`;return}
+ if(court==null||!getLiveGame(court))court=games[0].court;
+ let g=getLiveGame(court),sb=initScoreboard(court),serving=sb.servingTeam==="A"?g.team1:g.team2;
+ let called=`${sb.servingTeam==="A"?sb.scoreA:sb.scoreB} – ${sb.servingTeam==="A"?sb.scoreB:sb.scoreA} – ${sb.serverNumber}`;
+ let undoCount=sb.undoStack.length;
+ e.innerHTML=`<div class="panel" style="margin-bottom:15px"><div class="label">LIVE COURTS</div><div class="actions" style="margin-top:8px">${games.map(x=>`<button class="btn ${Number(x.court)===Number(court)?"primary":""}" data-score-court="${x.court}">🏟️ Court ${x.court} • Game ${x.round}</button>`).join("")}</div></div><div class="scoreboard-wrap"><div class="panel scoreboard-top"><div><b>GAME ${g.round} • COURT ${g.court}</b><div class="score-meta"><span>${g.isSingles?"Singles 1v1 • Same score entry":"Traditional Doubles • Side-Out Scoring"}</span><span>Current Call: <b>${called}</b></span></div></div><div class="actions" style="margin-top:0"><button class="btn" id="scoreReset">↺ Reset Game</button><button class="btn" id="scoreGameView">Current Game</button></div></div>
+ <div class="panel serving-banner"><div class="serving-label">🏓 SERVING</div><div class="serving-team">${serving.map(esc).join(" / ")}</div><div class="server-indicator">SERVER ${sb.serverNumber}</div><div class="score-call">${sb.servingTeam==="A"?sb.scoreA:sb.scoreB} – ${sb.servingTeam==="A"?sb.scoreB:sb.scoreA} – ${sb.serverNumber}</div></div>
+ <div class="scoreboard-board"><div class="score-side ${sb.servingTeam==="A"?"serving-side":""}" style="border-color:#5b3e86"><h2>🟣 ${g.team1.map(esc).join(" / ")}</h2><div class="score-big">${sb.scoreA}</div><div class="team-tag">${sb.servingTeam==="A"?`SERVING • SERVER ${sb.serverNumber}`:"RECEIVING"}</div></div><div class="score-side ${sb.servingTeam==="B"?"serving-side":""}" style="border-color:#285c3c"><h2>🟢 ${g.team2.map(esc).join(" / ")}</h2><div class="score-big">${sb.scoreB}</div><div class="team-tag">${sb.servingTeam==="B"?`SERVING • SERVER ${sb.serverNumber}`:"RECEIVING"}</div></div></div>
+ <div class="panel rally-panel"><div class="rally-title">RALLY RESULT</div><div class="rally-buttons"><button class="btn primary rally-btn" id="serveWon">🏓 Serving Team Won Rally</button><button class="btn rally-btn" id="receiveWon">↔ Receiving Team Won Rally</button></div><div class="score-undo"><button class="btn" id="scoreUndo" ${undoCount?"":"disabled"}>↩ Undo</button><span class="undo-count">${undoCount} action${undoCount===1?"":"s"} available</span></div><div class="muted rally-help">Undo is unlimited. Each press reverses exactly one previous rally action, including server and side-out changes.</div></div>
+ <div class="panel score-submit"><button class="btn success" id="submitScoreboard" style="font-size:18px;padding:13px 22px">🏆 Submit Final Result</button><button class="btn" id="cancelScoreboard">Cancel Game</button></div></div>`;
+ e.querySelectorAll('[data-score-court]').forEach(b=>b.onclick=()=>renderScoreboard(Number(b.dataset.scoreCourt)));
+ document.getElementById("serveWon").onclick=()=>{pushScoreUndo(sb);if(sb.servingTeam==="A")sb.scoreA++;else sb.scoreB++;save();renderScoreboard(court)};
+ document.getElementById("receiveWon").onclick=()=>{pushScoreUndo(sb);if(sb.serverNumber===1)sb.serverNumber=2;else{sb.servingTeam=sb.servingTeam==="A"?"B":"A";sb.serverNumber=1}save();renderScoreboard(court)};
+ document.getElementById("scoreUndo").onclick=()=>undoScore(court);
+ document.getElementById("scoreReset").onclick=()=>{S.scoreboards[String(court)]={gameRound:g.round,scoreA:0,scoreB:0,servingTeam:"A",serverNumber:2,undoStack:[]};save();renderScoreboard(court);toast("Scoreboard reset to 0 – 0 – 2.")};
+ document.getElementById("scoreGameView").onclick=()=>show("game");
+ document.getElementById("cancelScoreboard").onclick=()=>{S.rotation.unshift(g);S.liveGames=S.liveGames.filter(x=>Number(x.court)!==Number(court));delete S.scoreboards[String(court)];startAvailableGames();save();render();toast("Game returned to the queue.")};
+ document.getElementById("submitScoreboard").onclick=()=>{if(completeLiveGame(court,sb.scoreA,sb.scoreB,"scoreboard")){show("scoreboard");renderScoreboard();toast("Result submitted. The finished court has been assigned the next eligible game.")}};
+}
+function renderGame(){
+ let e=document.getElementById("gameContent"),games=liveGames();
+ document.getElementById("gameHead").textContent=games.length?`🎾 LIVE GAMES • ${games.length} / ${S.courts} COURT${S.courts===1?"":"S"}`:"🎾 CURRENT GAMES";
+ document.getElementById("gameSub").textContent=games.length?"Each court is independent. When a court finishes, its next eligible game starts automatically.":S.rotation.length?S.rotation.length+" games are queued and ready for available courts.":"Generate a 3-game rotation to begin.";
+ if(!games.length){e.innerHTML=rotationHTML();return}
+ e.innerHTML=`<div class="live-courts-grid">${games.map(g=>{let c=g.court,sit=g.waiting||[];return `<div class="panel" style="margin-bottom:15px"><div class="section" style="margin:0 0 10px"><h2>🏟️ COURT ${c} • GAME ${g.round}</h2><span class="muted">Live</span></div><div class="game-grid"><div class="team purple"><div class="team-name">🟣 TEAM 1</div>${g.team1.map((p,i)=>livePlayerHTML(p,c,i,sit)).join("")}<input id="s1-${c}" class="score" type="number" min="0" placeholder="0"></div><div class="team green"><div class="team-name">🟢 TEAM 2</div>${g.team2.map((p,i)=>livePlayerHTML(p,c,i+2,sit)).join("")}<input id="s2-${c}" class="score" type="number" min="0" placeholder="0"></div></div><div class="panel score-submit" style="margin-top:15px"><button class="btn success" data-record-court="${c}" style="font-size:18px;padding:13px 22px">🏆 Record Result</button><button class="btn primary" data-score-court="${c}" style="font-size:18px;padding:13px 22px">📟 Use Scoreboard</button></div><div class="panel"><b>⏳ SITTING OUT</b><div class="waiting">${sit.length?sit.map(p=>`<span>${esc(p)}</span>`).join(""):"<span>None</span>"}</div><div class="actions"><button class="btn" data-cancel-court="${c}">Cancel Game</button></div></div></div>`}).join("")}</div><div class="section"><h2>🔮 Upcoming Queue</h2></div>${rotationHTML()}`;
+ e.querySelectorAll('[data-record-court]').forEach(b=>b.onclick=()=>record(Number(b.dataset.recordCourt)));
+ e.querySelectorAll('[data-score-court]').forEach(b=>b.onclick=()=>{show("scoreboard");renderScoreboard(Number(b.dataset.scoreCourt))});
+ e.querySelectorAll('[data-cancel-court]').forEach(b=>b.onclick=()=>{let c=Number(b.dataset.cancelCourt),g=getLiveGame(c);if(!g)return;S.rotation.unshift(g);S.liveGames=S.liveGames.filter(x=>Number(x.court)!==c);delete S.scoreboards[String(c)];startAvailableGames();save();render();toast("Game returned to the queue.")});
+ e.querySelectorAll("[data-swap-apply]").forEach(b=>b.onclick=()=>{let [c,idx,from]=b.dataset.swapApply.split("|");swapPlayerRow(Number(c),Number(idx),from)});
+e.querySelectorAll("[data-swap-cancel]").forEach(b=>b.onclick=()=>{let [c,idx]=b.dataset.swapCancel.split("|");cancelPlayerSwap(Number(c),Number(idx))});
+}
+function renderPlayers(){
+let e=document.getElementById("playersList");document.getElementById("count").textContent=active().length+" active / "+S.players.length+" total";
+if(!S.players.length){e.innerHTML='<div class="panel empty" style="grid-column:1/-1">No players yet.</div>';return}
+let st=stats();
+e.innerHTML=S.players.map((p,i)=>{let x=st.find(v=>v.name===p.name)||{games:0,wins:0,losses:0,pct:0,mmr:p.mmr??500};return `<div class="player-row" style="align-items:flex-start"><span style="min-width:0"><div><i class="dot ${p.active?"on":""}"></i><b>${esc(p.name)}</b></div><div class="muted" style="font-size:11px;margin-top:5px">${x.games} games • ${x.wins}W / ${x.losses}L • ${(x.pct*100).toFixed(0)}% win rate • MMR ${x.mmr}</div></span><span style="white-space:nowrap"><button class="btn" data-e="${i}">✎ Edit</button> <button class="btn" data-t="${i}">${p.active?"Deactivate":"Activate"}</button> <button class="btn danger" data-d="${i}">Delete</button></span></div>`}).join("");
+e.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>editPlayer(+b.dataset.e));
+e.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{
+ let p=S.players[+b.dataset.t];
+ p.active=!p.active;
+ // IMPORTANT: do not touch the existing queue. The user can explicitly
+ // regenerate it later to apply the roster change.
+ S.queueNeedsRegenerate=true;
+ save();render();
+ toast(p.active?p.name+" activated. The current queue was kept. Generate 3 Games to apply the roster change.":p.name+" deactivated. The current queue was kept. Generate 3 Games to rebuild it without this player.")
+});
+e.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{
+ S.players.splice(+b.dataset.d,1);
+ S.queueNeedsRegenerate=true;
+ save();render();toast("Player deleted. The current queue was kept. Generate 3 Games to rebuild it.")
+})
+}
+function editPlayer(index){
+ let p=S.players[index];if(!p)return;
+ let next=prompt("Edit player name:",p.name);if(next===null)return;next=next.trim();
+ if(!next){toast("Player name cannot be empty.");return}
+ if(S.players.some((x,i)=>i!==index&&x.name.toLowerCase()===next.toLowerCase())){toast("Player already exists.");return}
+ let old=p.name;p.name=next;
+ // Keep historical/current/queued references synchronized with the renamed profile.
+ S.games.forEach(g=>["team1","team2"].forEach(k=>g[k]=g[k].map(x=>x===old?next:x)));
+ S.liveGames.forEach(g=>["team1","team2","waiting"].forEach(k=>g[k]=g[k].map(x=>x===old?next:x)));
+ S.rotation.forEach(g=>["team1","team2","waiting"].forEach(k=>g[k]=g[k].map(x=>x===old?next:x)));
+ // Keep tournament labels/player arrays synchronized with the edited profile.
+ let t=S.tournament;
+ if(t){
+  (t.participants||[]).forEach(x=>{x.names=(x.names||[]).map(n=>n===old?next:n);x.label=x.names.join(" + ")||x.label});
+  [...(t.wbRounds||[]).flat(),...(t.lbRounds||[]).flat(),...(t.grandFinal?[t.grandFinal]:[]),...(t.grandFinalResetMatch?[t.grandFinalResetMatch]:[])].forEach(m=>{
+   if(!m)return;
+   ["aPlayers","bPlayers","winnerPlayers","loserPlayers"].forEach(k=>{if(Array.isArray(m[k]))m[k]=m[k].map(n=>n===old?next:n)});
+   if(Array.isArray(m.aPlayers)&&m.aPlayers.length)m.a=m.aPlayers.join(" + ");
+   if(Array.isArray(m.bPlayers)&&m.bPlayers.length)m.b=m.bPlayers.join(" + ");
+   if(m.winner===old)m.winner=next;if(m.loser===old)m.loser=next;
+  });
+ }
+ save();render();toast("Player profile updated.");
+}
+function historyPlayerHTML(gameIndex,team,index,name){return `<span class="history-player"><b>${esc(name)}</b><button class="btn" data-he="${gameIndex}" data-ht="${team}" data-hi="${index}" title="Edit this historical player">✎</button></span>`}
+function editHistoryPlayer(gameIndex,team,index){
+ let g=S.games[gameIndex];if(!g)return;let arr=g[team];if(!arr||!arr[index])return;
+ let old=arr[index],next=prompt("Correct player name for this game:",old);if(next===null)return;next=next.trim();if(!next){toast("Player name cannot be empty.");return}
+ let other=[...g.team1,...g.team2].filter((x,i)=>!(team==="team1"?i===index:i===g.team1.length+index));
+ if(other.some(x=>x.toLowerCase()===next.toLowerCase())){toast("That player is already in this game.");return}
+ arr[index]=next;
+ if(!S.players.some(p=>p.name.toLowerCase()===next.toLowerCase()))S.players.push({name:next,active:true,mmr:500,startingMMR:500});
+ save();render();toast("History corrected: "+old+" → "+next+". Player stats were updated.");
+}
+function formatShortDateTime(value){if(!value)return"—";let d=new Date(value);if(Number.isNaN(d.getTime()))return"—";return d.toLocaleString([], {year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}
+function statsForSession(id){
+ let savedMMR=(S.sessions.find(x=>x.id===id)||{}).mmrByPlayer||{};let by=new Map(S.players.map(p=>[p.name,{name:p.name,games:0,wins:0,losses:0,pf:0,pa:0,mmr:savedMMR[p.name]??Number(p.mmr??500)}]));
+ S.games.filter(g=>g.sessionId===id).forEach(g=>{
+  [...g.team1,...g.team2].forEach(name=>{if(!by.has(name))by.set(name,{name,games:0,wins:0,losses:0,pf:0,pa:0,mmr:savedMMR[name]??500})});
+  g.team1.forEach(name=>{let x=by.get(name);x.games++;x.wins+=g.winner===1?1:0;x.losses+=g.winner===1?0:1;x.pf+=Number(g.s1)||0;x.pa+=Number(g.s2)||0});
+  g.team2.forEach(name=>{let x=by.get(name);x.games++;x.wins+=g.winner===2?1:0;x.losses+=g.winner===2?0:1;x.pf+=Number(g.s2)||0;x.pa+=Number(g.s1)||0});
+ });
+ return [...by.values()].filter(x=>x.games>0).map(x=>({...x,diff:x.pf-x.pa,pct:x.wins/x.games})).sort((a,b)=>b.wins-a.wins||b.pct-a.pct||b.diff-a.diff||a.name.localeCompare(b.name)).map((x,i)=>({...x,rank:i+1}));
+}
+function exportableSessionId(){return document.getElementById("exportSession")?.value||currentSessionId()||S.sessions.find(x=>S.games.some(g=>g.sessionId===x.id))?.id||null}
+function sessionReportData(id){let session=S.sessions.find(x=>x.id===id)||{id,name:"Previous / Legacy Games",startedAt:null,endedAt:null,courts:1};let games=S.games.filter(g=>g.sessionId===id).slice().sort((a,b)=>new Date(a.time||0)-new Date(b.time||0));return{session,games,stats:statsForSession(id)}}
+function asciiSafe(x){return String(x??"").replace(/[^\x20-\x7E]/g," ").replace(/\s+/g," ").trim()}
+function populateExportSessions(){
+ let e=document.getElementById("exportSession");if(!e)return;let sessions=[...S.sessions].filter(x=>S.games.some(g=>g.sessionId===x.id));if(S.session&&!sessions.some(x=>x.id===S.session.id))sessions.unshift(S.session);sessions.sort((a,b)=>new Date(b.startedAt||0)-new Date(a.startedAt||0));
+ if(!sessions.length){e.innerHTML='<option value="">No sessions with recorded games</option>';e.disabled=true;document.getElementById("exportPdf")?.setAttribute("disabled","true");document.getElementById("exportJpeg")?.setAttribute("disabled","true");return}
+ e.innerHTML=sessions.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}${x.startedAt?" • "+formatShortDateTime(x.startedAt):""}</option>`).join("");if(currentSessionId()&&sessions.some(x=>x.id===currentSessionId()))e.value=currentSessionId();e.disabled=false;document.getElementById("exportPdf")?.removeAttribute("disabled");document.getElementById("exportJpeg")?.removeAttribute("disabled");
+}
+function buildReportText(id){let d=sessionReportData(id),s=d.session,L=[];L.push("J'S PICKLEHUB - SESSION REPORT",`Session: ${asciiSafe(s.name||"Unnamed Session")}`,`Started: ${formatShortDateTime(s.startedAt)}`,`Ended: ${formatShortDateTime(s.endedAt)}`,`Courts: ${s.courts||1}`,`Games played: ${d.games.length}`,"","PLAYER STATS","Rank | Player | Games | Wins | Losses | Win % | Points +/- | MMR");d.stats.forEach(x=>L.push(`${x.rank} | ${asciiSafe(x.name)} | ${x.games} | ${x.wins} | ${x.losses} | ${(x.pct*100).toFixed(1)}% | ${x.diff>=0?"+":""}${x.diff} | ${Math.round(x.mmr)}`));L.push("","MATCH HISTORY");d.games.forEach(g=>L.push(`Game ${g.round} | ${formatShortDateTime(g.time)} | ${asciiSafe(g.team1.join(" + "))} ${g.s1}-${g.s2} ${asciiSafe(g.team2.join(" + "))} | Winner: Team ${g.winner}`));return L}
+function downloadBlob(blob,name){let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+function safeFileName(x){return asciiSafe(x||"session").replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"")||"session"}
+function pdfEscape(x){return asciiSafe(x).replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)")}
+function pdfText(stream,x,y,text,size=10,bold=false,color=[1,1,1]){stream.push(`${color[0]} ${color[1]} ${color[2]} rg`);stream.push(`/F${bold?2:1} ${size} Tf`);stream.push(`${x} ${y} Td`);stream.push(`(${pdfEscape(text)}) Tj`);stream.push(`${-x} ${-y} Td`)}
+function pdfRect(stream,x,y,w,h,color,r=0){stream.push(`${color[0]} ${color[1]} ${color[2]} rg`);stream.push(`${x} ${y} ${w} ${h} re f`)}
+function pdfLine(stream,x1,y1,x2,y2,color=[0.2,0.2,0.2],width=1){stream.push(`${color[0]} ${color[1]} ${color[2]} RG`);stream.push(`${width} w`);stream.push(`${x1} ${y1} m ${x2} ${y2} l S`)}
+function exportSessionPDF(){
+ let id=exportableSessionId();if(!id){toast("No session is available to export.");return}
+ let d=sessionReportData(id),W=595,H=842,M=38,objs=["<< /Type /Catalog /Pages 2 0 R >>",""],pageNums=[];
+ let pages=[{kind:"summary"}];for(let i=0;i<d.stats.length;i+=11)pages.push({kind:"stats",rows:d.stats.slice(i,i+11),part:Math.floor(i/11)+1});for(let i=0;i<d.games.length;i+=13)pages.push({kind:"games",rows:d.games.slice(i,i+13),part:Math.floor(i/13)+1});
+ pages.forEach((pg,pageIndex)=>{
+  let pageObj=objs.length+1,contentObj=pageObj+1,fontObj=pageObj+2,boldObj=pageObj+3;pageNums.push(pageObj);let st=[];
+  pdfRect(st,0,0,W,H,[0.035,0.027,0.055]);pdfRect(st,0,H-112,W,112,[0.10,0.065,0.15]);pdfRect(st,0,H-112,W,5,[0.55,0.36,0.96]);
+  pdfText(st,M,H-46,"J'S PICKLEHUB",24,true,[1,1,1]);pdfText(st,M,H-70,"SESSION REPORT",10,true,[0.72,0.55,1]);pdfText(st,W-M-76,H-48,"PICKLEBALL",8,true,[0.96,0.68,0.2]);
+  if(pg.kind==="summary"){
+   pdfText(st,M,H-145,"SESSION OVERVIEW",11,true,[0.72,0.55,1]);pdfText(st,M,H-173,asciiSafe(d.session.name||"Unnamed Session").slice(0,55),22,true,[1,1,1]);
+   let meta=[[`STARTED`,formatShortDateTime(d.session.startedAt)],[`ENDED`,formatShortDateTime(d.session.endedAt)],[`COURTS`,String(d.session.courts||1)],[`GAMES`,String(d.games.length)]];
+   meta.forEach((x,i)=>{let xx=M+(i%2)*270,yy=H-212-Math.floor(i/2)*48;pdfRect(st,xx,yy-18,245,34,[0.075,0.055,0.10]);pdfText(st,xx+10,yy,x[0],7,true,[0.62,0.58,0.69]);pdfText(st,xx+10,yy-14,asciiSafe(x[1]).slice(0,34),9,true,[1,1,1])});
+   let totalPoints=d.games.reduce((n,g)=>n+Number(g.s1||0)+Number(g.s2||0),0),avgDiff=d.games.length?d.games.reduce((n,g)=>n+Math.abs(Number(g.s1||0)-Number(g.s2||0)),0)/d.games.length:0;
+   let kpis=[["PLAYERS",String(d.stats.length)],["TOTAL POINTS",String(totalPoints)],["AVG. MARGIN",avgDiff.toFixed(1)],["MMR TOP",d.stats.length?String(Math.round(Math.max(...d.stats.map(x=>x.mmr)))):"—"]];
+   kpis.forEach((x,i)=>{let xx=M+i*132;pdfRect(st,xx,H-344,122,48,[0.08,0.06,0.11]);pdfText(st,xx+8,H-315,x[0],6.5,true,[0.62,0.58,0.69]);pdfText(st,xx+8,H-334,x[1],13,true,[1,1,1])});
+   pdfText(st,M,H-378,"LEADERBOARD",14,true,[0.72,0.55,1]);let y=H-407;pdfRect(st,M,y-10,W-2*M,24,[0.12,0.085,0.17]);[["#",M+8],["PLAYER",M+42],["G",M+240],["W-L",M+278],["WIN %",M+340],["+/-",M+410],["MMR",M+462]].forEach(x=>pdfText(st,x[1],y,x[0],7.5,true,[0.72,0.69,0.78]));y-=27;
+   d.stats.slice(0,11).forEach((x,i)=>{if(i%2===0)pdfRect(st,M,y-9,W-2*M,22,[0.06,0.045,0.085]);pdfText(st,M+8,y,`${x.rank}`,9,true,i<3?[0.96,0.68,0.2]:[1,1,1]);pdfText(st,M+42,y,asciiSafe(x.name).slice(0,28),9,false,[1,1,1]);pdfText(st,M+240,y,`${x.games}`,8.5);pdfText(st,M+278,y,`${x.wins}-${x.losses}`,8.5);pdfText(st,M+340,y,`${(x.pct*100).toFixed(1)}%`,8.5);pdfText(st,M+410,y,`${x.diff>=0?"+":""}${x.diff}`,8.5);pdfText(st,M+462,y,`${Math.round(x.mmr)}`,8.5,true,[0.78,0.88,0.82]);y-=23});
+   if(d.stats.length){let top=d.stats[0];pdfRect(st,M,H-755,W-2*M,62,[0.08,0.055,0.12]);pdfText(st,M+14,H-715,"SESSION MVP",7,true,[0.96,0.68,0.2]);pdfText(st,M+14,H-738,`${asciiSafe(top.name)}  •  ${top.wins} wins  •  ${(top.pct*100).toFixed(1)}% win rate`,11,true,[1,1,1])}
+  } else if(pg.kind==="stats"){
+   pdfText(st,M,H-145,`PLAYER LEADERBOARD ${pg.part}`,16,true,[0.72,0.55,1]);let y=H-180;pdfRect(st,M,y-12,W-2*M,28,[0.12,0.085,0.17]);[["RANK",M+8],["PLAYER",M+48],["G",M+250],["W-L",M+290],["WIN %",M+355],["+/-",M+425],["MMR",M+470]].forEach(x=>pdfText(st,x[1],y,x[0],8,true,[0.72,0.69,0.78]));y-=30;pg.rows.forEach((x,i)=>{if(i%2===0)pdfRect(st,M,y-11,W-2*M,24,[0.06,0.045,0.085]);pdfText(st,M+8,y,`${x.rank}`,9,true,x.rank<=3?[0.96,0.68,0.2]:[1,1,1]);pdfText(st,M+48,y,asciiSafe(x.name).slice(0,27),9);pdfText(st,M+250,y,`${x.games}`,9);pdfText(st,M+290,y,`${x.wins}-${x.losses}`,9);pdfText(st,M+355,y,`${(x.pct*100).toFixed(1)}%`,9);pdfText(st,M+425,y,`${x.diff>=0?"+":""}${x.diff}`,9);pdfText(st,M+470,y,`${Math.round(x.mmr)}`,9,true,[0.78,0.88,0.82]);y-=28});
+  } else {
+   pdfText(st,M,H-145,`MATCH HISTORY ${pg.part}`,16,true,[0.72,0.55,1]);pdfText(st,M,H-166,`${pg.rows.length} matches on this page`,8,false,[0.62,0.58,0.69]);let y=H-195;pdfRect(st,M,y-12,W-2*M,28,[0.12,0.085,0.17]);[["GAME",M+8],["DATE / TIME",M+55],["TEAM 1",M+164],["SCORE",M+357],["TEAM 2",M+410]].forEach(x=>pdfText(st,x[1],y,x[0],7.2,true,[0.72,0.69,0.78]));y-=30;pg.rows.forEach((g,i)=>{if(i%2===0)pdfRect(st,M,y-11,W-2*M,24,[0.06,0.045,0.085]);pdfText(st,M+8,y,`G${g.round}`,8,true,[0.72,0.55,1]);pdfText(st,M+55,y,formatShortDateTime(g.time),7.2,false,[0.78,0.75,0.82]);pdfText(st,M+164,y,asciiSafe(g.team1.join(" + ")).slice(0,27),7.2);pdfText(st,M+357,y,`${g.s1}-${g.s2}`,8,true,[0.96,0.68,0.2]);pdfText(st,M+410,y,asciiSafe(g.team2.join(" + ")).slice(0,25),7.2);y-=28});
+  }
+  pdfText(st,M,24,`J's Picklehub • ${asciiSafe(d.session.name||"Session").slice(0,45)}`,7,false,[0.5,0.46,0.56]);pdfText(st,W-M-28,24,`${pageIndex+1}/${pages.length}`,7,false,[0.5,0.46,0.56]);
+  let body=st.join("\n");objs.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 ${fontObj} 0 R /F2 ${boldObj} 0 R >> >> /Contents ${contentObj} 0 R >>`);objs.push(`<< /Length ${body.length} >>\nstream\n${body}\nendstream`);objs.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");objs.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>");
+ });
+ objs[1]=`<< /Type /Pages /Kids [${pageNums.map(n=>n+" 0 R").join(" ")}] /Count ${pageNums.length} >>`;let pdf="%PDF-1.4\n",offs=[0];for(let i=0;i<objs.length;i++){offs[i+1]=pdf.length;pdf+=(i+1)+" 0 obj\n"+objs[i]+"\nendobj\n"}let xref=pdf.length;pdf+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`;for(let i=1;i<=objs.length;i++)pdf+=String(offs[i]).padStart(10,"0")+" 00000 n \n";pdf+=`trailer\n<< /Size ${objs.length+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;downloadBlob(new Blob([pdf],{type:"application/pdf"}),safeFileName(d.session.name)+"-report.pdf");toast("Optimized PDF session report exported.")
+}
+function roundRectCanvas(ctx,x,y,w,h,r){let rr=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath()}
+function exportSessionJPEG(){
+ let id=exportableSessionId();if(!id){toast("No session is available to export.");return}
+ let d=sessionReportData(id),W=1800,M=90,header=300,rowH=58,sectionH=74,statsHeader=54,gameH=54;
+ let total=Math.max(1180,header+sectionH+statsHeader+Math.max(1,d.stats.length)*rowH+sectionH+Math.max(1,d.games.length)*gameH+170),c=document.createElement("canvas");c.width=W;c.height=total;let ctx=c.getContext("2d");
+ ctx.fillStyle="#09070f";ctx.fillRect(0,0,W,total);ctx.fillStyle="#1b1628";ctx.fillRect(0,0,W,header);ctx.fillStyle="#8b5cf6";ctx.fillRect(0,header-9,W,9);
+ ctx.fillStyle="#f7f4ff";ctx.font="800 54px Inter,Arial";ctx.fillText("J'S PICKLEHUB",M,84);ctx.fillStyle="#b89cff";ctx.font="800 25px Inter,Arial";ctx.fillText("SESSION REPORT",M,128);ctx.fillStyle="#f7f4ff";ctx.font="800 38px Inter,Arial";ctx.fillText(String(d.session.name||"Unnamed Session").slice(0,58),M,193);ctx.fillStyle="#aaa0bb";ctx.font="22px Inter,Arial";ctx.fillText(`Started ${formatShortDateTime(d.session.startedAt)}   •   Ended ${formatShortDateTime(d.session.endedAt)}   •   ${d.session.courts||1} court(s)`,M,234);
+ let totalPoints=d.games.reduce((n,g)=>n+Number(g.s1||0)+Number(g.s2||0),0),avgDiff=d.games.length?d.games.reduce((n,g)=>n+Math.abs(Number(g.s1||0)-Number(g.s2||0)),0)/d.games.length:0;
+ [["PLAYERS",d.stats.length],["GAMES",d.games.length],["TOTAL POINTS",totalPoints],["AVG. MARGIN",avgDiff.toFixed(1)],["TOP MMR",d.stats.length?Math.max(...d.stats.map(x=>Math.round(x.mmr))):"—"]].forEach((x,i)=>{let xx=M+i*320;ctx.fillStyle="#15111f";roundRectCanvas(ctx,xx,252,300,72,16);ctx.fill();ctx.fillStyle="#aaa0bb";ctx.font="800 14px Inter,Arial";ctx.fillText(x[0],xx+18,278);ctx.fillStyle="#f7f4ff";ctx.font="800 25px Inter,Arial";ctx.fillText(String(x[1]),xx+18,307)});
+ let y=header+35;function title(t){ctx.fillStyle="#b89cff";ctx.font="800 27px Inter,Arial";ctx.fillText(t,M,y);y+=sectionH}function tableHead(cols,xs){ctx.fillStyle="#211a2f";roundRectCanvas(ctx,M,y-40,W-M*2,48,12);ctx.fill();ctx.fillStyle="#aaa0bb";ctx.font="800 15px Inter,Arial";cols.forEach((v,i)=>ctx.fillText(v,xs[i],y-10));y+=statsHeader}function cell(v,x,bold=false){ctx.fillStyle="#f7f4ff";ctx.font=`${bold?800:400} 17px Inter,Arial`;ctx.fillText(String(v),x,y)}
+ title("PLAYER LEADERBOARD");let xs=[M+15,M+90,M+660,M+755,M+870,M+1000,M+1130];tableHead(["RANK","PLAYER","GAMES","W-L","WIN %","+/-","MMR"],xs);d.stats.forEach((x,i)=>{if(i%2===0){ctx.fillStyle="#15111f";roundRectCanvas(ctx,M,y-31,W-M*2,45,9);ctx.fill()}cell(x.rank,xs[0],x.rank<=3);cell(x.name.slice(0,38),xs[1]);cell(x.games,xs[2]);cell(`${x.wins}-${x.losses}`,xs[3]);cell(`${(x.pct*100).toFixed(1)}%`,xs[4]);cell(`${x.diff>=0?"+":""}${x.diff}`,xs[5]);cell(Math.round(x.mmr),xs[6],true);y+=rowH});
+ if(d.stats.length){ctx.fillStyle="#1b1628";roundRectCanvas(ctx,M,y-22,W-M*2,74,16);ctx.fill();ctx.fillStyle="#f6ac33";ctx.font="800 14px Inter,Arial";ctx.fillText("SESSION MVP",M+18,y+3);ctx.fillStyle="#f7f4ff";ctx.font="800 21px Inter,Arial";ctx.fillText(`${d.stats[0].name}  •  ${d.stats[0].wins} wins  •  ${(d.stats[0].pct*100).toFixed(1)}% win rate`,M+18,y+34);y+=105}
+ title("MATCH HISTORY");tableHead(["GAME","DATE / TIME","TEAM 1","SCORE","TEAM 2"],[M+15,M+100,M+420,M+1120,M+1220]);d.games.forEach((g,i)=>{if(i%2===0){ctx.fillStyle="#15111f";roundRectCanvas(ctx,M,y-31,W-M*2,45,9);ctx.fill()}cell(`Game ${g.round}`,M+15,true);cell(formatShortDateTime(g.time),M+100);cell(g.team1.join(" + ").slice(0,45),M+420);cell(`${g.s1}-${g.s2}`,M+1120,true);cell(g.team2.join(" + ").slice(0,42),M+1220);y+=gameH});
+ ctx.fillStyle="#aaa0bb";ctx.font="16px Inter,Arial";ctx.fillText("J's Picklehub • Pickleball Session Report",M,total-38);ctx.fillText(`${d.games.length} recorded games`,W-M-170,total-38);
+ c.toBlob(b=>{downloadBlob(b,safeFileName(d.session.name)+"-report.jpg");toast("Optimized JPEG session report exported.")},"image/jpeg",.96)
+}
+
+function clearHistory(){
+ if(!S.games.length){toast("History is already empty.");renderSportsTicker();return}
+ if(!confirm("Clear all recorded match history? This will also clear the matches shown in the moving marquee and reset recorded game statistics. Your active players, current live game, and upcoming queue will remain."))return;
+ S.games=[];
+ S.tickerCleared=true;
+ S.sessions=Array.isArray(S.sessions)?S.sessions:[];
+ S.sessions.forEach(x=>{if(x && x.id===currentSessionId()){x.games=0}});
+ renderSportsTicker();
+ save();
+ render();
+ toast("Match history and marquee results cleared.");
+}
+
+function renderHistory(){
+ let e=document.getElementById("historyContent");populateExportSessions();if(!S.games.length){e.innerHTML='<div class="panel empty">No games recorded yet.</div>';return}
+ e.innerHTML='<div class="table"><table><thead><tr><th>Session</th><th>Game</th><th>Date / Time</th><th>Team 1</th><th>Score</th><th>Team 2</th><th>Winner</th></tr></thead><tbody>'+S.games.slice().reverse().map((g,ri)=>{let gi=S.games.length-1-ri,ss=S.sessions.find(x=>x.id===g.sessionId);return `<tr><td>${esc(ss?.name||"Previous / Legacy Games")}</td><td>Game ${g.round}</td><td>${formatShortDateTime(g.time)}</td><td>${g.team1.map((n,i)=>historyPlayerHTML(gi,"team1",i,n)).join(" ")}</td><td><b>${g.s1} - ${g.s2}</b></td><td>${g.team2.map((n,i)=>historyPlayerHTML(gi,"team2",i,n)).join(" ")}</td><td>🏆 Team ${g.winner}</td></tr>`}).join("")+'</tbody></table></div>';
+ e.querySelectorAll("[data-he]").forEach(b=>b.onclick=()=>editHistoryPlayer(+b.dataset.he,b.dataset.ht,+b.dataset.hi));
+}
+function tournamentParticipants(type){
+ let ps=shuffle(active());
+ if(type==="singles")return ps.map(name=>({label:name,names:[name]}));
+ let teams=[];for(let i=0;i<ps.length;i+=2){if(i+1<ps.length)teams.push({label:ps[i]+" + "+ps[i+1],names:[ps[i],ps[i+1]]});}
+ return teams;
+}
+function pairingDraft(type){
+ let names=active(), slots=[];
+ if(type==="singles"){
+  names.forEach(n=>slots.push({names:[n],label:n}));
+ }else{
+  for(let i=0;i<names.length;i+=2)if(names[i+1])slots.push({names:[names[i],names[i+1]],label:names[i]+" + "+names[i+1]});
+ }
+ return shuffle(slots);
+}
+function pairingEditorHTML(){
+ let type=document.getElementById("tournamentType")?.value||"singles", mode=document.getElementById("pairingMode")?.value||"random", draft=S.tournament.draft||pairingDraft(type);
+ if(mode!=="custom")return '<div class="panel" style="margin-top:15px"><b>🎲 Random Pairings</b><div class="muted" style="margin-top:5px">Players are shuffled automatically when the tournament starts.</div></div>';
+ let names=active(), used=[];
+ let out='<div class="panel" style="margin-top:15px"><b>✏️ Create My Own Pairings</b><div class="muted" style="margin:5px 0 12px">Edit the initial '+(type==="doubles"?'teams':'player slots')+'. The same player cannot be entered twice.</div>';
+ if(type==="singles"){
+  out+='<div class="game-grid">';for(let i=0;i<Math.max(2,draft.length);i++){let v=draft[i]?.names?.[0]||names[i]||"";out+=`<div><div class="label">Slot ${i+1}</div><select class="pair-single" data-i="${i}"><option value="">Select player</option>${names.map(n=>`<option value="${esc(n)}" ${n===v?'selected':''}>${esc(n)}</option>`).join("")}</select></div>`}out+='</div>';
+ }else{
+  out+='<div class="game-grid">';for(let i=0;i<Math.max(2,draft.length);i++){let a=draft[i]?.names?.[0]||"",b=draft[i]?.names?.[1]||"";out+=`<div class="panel" style="margin-top:0"><div class="label">Team ${i+1}</div><select class="pair-double" data-i="${i}" data-side="a"><option value="">Player 1</option>${names.map(n=>`<option value="${esc(n)}" ${n===a?'selected':''}>${esc(n)}</option>`).join("")}</select><select class="pair-double" data-i="${i}" data-side="b" style="margin-top:7px"><option value="">Player 2</option>${names.map(n=>`<option value="${esc(n)}" ${n===b?'selected':''}>${esc(n)}</option>`).join("")}</select></div>`}out+='</div>';
+ }
+ out+='<div class="actions"><button class="btn primary" id="applyPairings">Use These Pairings</button><button class="btn" id="randomizePairings">🎲 Randomize</button></div></div>';return out;
+}
+function readPairingDraft(){
+ let type=document.getElementById("tournamentType")?.value||"singles", out=[];
+ if(type==="singles")document.querySelectorAll(".pair-single").forEach(x=>{if(x.value)out.push({label:x.value,names:[x.value]})});
+ else{
+  let groups={};document.querySelectorAll(".pair-double").forEach(x=>{let i=x.dataset.i;groups[i]=groups[i]||{};groups[i][x.dataset.side]=x.value});
+  Object.keys(groups).sort((a,b)=>+a-+b).forEach(i=>{let g=groups[i];if(g.a&&g.b)out.push({label:g.a+" + "+g.b,names:[g.a,g.b]})});
+ }
+ return out;
+}
+function makeMatch(a,b,id,aFrom=null,bFrom=null){return{id:id||"m"+S.tournament.nextId++,a:a?a.label:null,b:b?b.label:null,aPlayers:a?a.names:[],bPlayers:b?b.names:[],aFrom,bFrom,scoreA:null,scoreB:null,winner:null,winnerPlayers:[],loser:null,loserPlayers:[],pointDiff:null}}
+function createTournament(){
+ if(!requireSession())return;
+ let type=document.getElementById("tournamentType")?.value||"singles",format=document.getElementById("tournamentFormat")?.value||"single",mode=document.getElementById("pairingMode")?.value||"random";
+ let participants=mode==="custom"?readPairingDraft():pairingDraft(type);
+ if(type==="singles" && participants.length<2){toast("You need at least 2 players in the pairings.");return}
+ if(type==="doubles" && participants.length<2){toast("You need at least 4 players for doubles pairings.");return}
+ let seen=[];participants.forEach(p=>p.names.forEach(n=>seen.push(n)));if(new Set(seen).size!==seen.length){toast("A player can only appear once in the initial pairings.");return}
+ S.tournament={started:true,type,format,pairingMode:mode,participants:JSON.parse(JSON.stringify(participants)),rounds:[],wbRounds:[],lbRounds:[],grandFinal:null,champion:null,nextId:S.tournament.nextId,standings:[],swissRound:0,swissComplete:false};
+ if(format==="single")createSingleEliminationTournament(type,participants);else if(format==="winners_losers")createDoubleEliminationTournament(type,participants);else createSwissTournament(type,participants);
+}
+function createSingleEliminationTournament(type,participants){
+ let t=S.tournament,size=2**Math.ceil(Math.log2(participants.length)),slots=[...participants];while(slots.length<size)slots.push(null);
+ let first=[];for(let i=0;i<size;i+=2)first.push(makeMatch(slots[i],slots[i+1]));
+ t.rounds=[first];
+ let prev=first,roundNo=2;
+ while(prev.length>1){let next=[];for(let i=0;i<prev.length;i+=2)next.push(makeMatch(null,null,null,{id:prev[i].id,side:"winner"},{id:prev[i+1].id,side:"winner"}));t.rounds.push(next);prev=next;roundNo++}
+ resolveTournament();save();render();show("tournament");toast((type==="singles"?"Singles":"Doubles")+" • Single Elimination created.");
+}
+function createDoubleEliminationTournament(type,participants){
+ let t=S.tournament,size=2**Math.ceil(Math.log2(participants.length)),slots=[...participants];while(slots.length<size)slots.push(null);
+ let wb=[];
+ let first=[];for(let i=0;i<size;i+=2)first.push(makeMatch(slots[i],slots[i+1]));wb.push(first);
+ let prev=first;
+ while(prev.length>1){let next=[];for(let i=0;i<prev.length;i+=2)next.push(makeMatch(null,null,null,{id:prev[i].id,side:"winner"},{id:prev[i+1].id,side:"winner"}));wb.push(next);prev=next}
+ t.wbRounds=wb;t.rounds=wb;t.lbRounds=[];t.grandFinal=null;t.grandFinalReset=false;t.grandFinalResetMatch=null;
+ // Pre-build the standard double-elimination losers bracket so every round is visible immediately.
+ // For a 3-team field, use a dedicated 3-team structure with a first-round bye.
+ if(participants.length===3){
+   let wbR1=wb[0],wbFinal=wb[wb.length-1];
+   t.lbRounds=[
+     [makeMatch(null,null,null,{id:wbR1[0].id,side:"loser"},null)],
+     [makeMatch(null,null,null,{id:"LB1",side:"winner"},{id:wbFinal.id,side:"loser"})]
+   ];
+   t.lbRounds[1][0].aFrom={id:t.lbRounds[0][0].id,side:"winner"};
+ }else if(size>=4){
+   // LB1: WB Round 1 losers paired together.
+   let wb1=wb[0],lb1=[];
+   for(let i=0;i<wb1.length;i+=2)lb1.push(makeMatch(null,null,null,{id:wb1[i].id,side:"loser"},{id:wb1[i+1].id,side:"loser"}));
+   t.lbRounds.push(lb1);
+   // For each later WB round except the final: LB gets the previous LB winners + current WB losers.
+   for(let wi=1;wi<wb.length-1;wi++){
+     let prior=t.lbRounds[t.lbRounds.length-1],wbRound=wb[wi],lb=[];
+     for(let i=0;i<wbRound.length;i++)lb.push(makeMatch(null,null,null,{id:prior[i].id,side:"winner"},{id:wbRound[i].id,side:"loser"}));
+     t.lbRounds.push(lb);
+   }
+   // Once only one LB match remains, the WB final loser enters the last LB round.
+   let prior=t.lbRounds[t.lbRounds.length-1],lbFinal=[];
+   if(prior.length===1)lbFinal.push(makeMatch(null,null,null,{id:prior[0].id,side:"winner"},{id:wb[wb.length-1][0].id,side:"loser"}));
+   else {
+     // Fallback for unusually large/non-power-of-two structures: reduce prior LB winners first.
+     let reduce=[];for(let i=0;i<prior.length;i+=2)reduce.push(makeMatch(null,null,null,{id:prior[i].id,side:"winner"},{id:prior[i+1].id,side:"winner"}));
+     t.lbRounds.push(reduce);prior=reduce;lbFinal=[makeMatch(null,null,null,{id:prior[0].id,side:"winner"},{id:wb[wb.length-1][0].id,side:"loser"})];
+   }
+   t.lbRounds.push(lbFinal);
+ }
+ resolveDoubleElimination(t);save();render();show("tournament");toast((type==="singles"?"Singles":"Doubles")+" • Double Elimination created.");
+}
+function createSwissTournament(type,participants){
+ let arr=shuffle(participants),first=[];for(let i=0;i<arr.length;i+=2)first.push(makeMatch(arr[i],arr[i+1]||null));let standings=participants.map(p=>({label:p.label,names:p.names,wins:0,losses:0,points:0,opponents:[]}));
+ S.tournament.standings=standings;S.tournament.swissRound=1;S.tournament.rounds=[first];first.forEach(m=>{if(!m.b){m.winner=m.a;m.winnerPlayers=m.aPlayers||[]}});save();render();show("tournament");toast((type==="singles"?"Singles":"Doubles")+" • Swiss Round 1 created.");
+}
+function buildNextSwissRound(){let t=S.tournament, standings=[...t.standings].sort((a,b)=>b.points-a.points||b.wins-a.wins||a.losses-b.losses),pairs=[],used=new Set();for(let i=0;i<standings.length;i++){if(used.has(standings[i].label))continue;let opp=standings.find((x,j)=>j>i&&!used.has(x.label)&&!standings[i].opponents.includes(x.label));if(!opp)opp=standings.find(x=>!used.has(x.label)&&x.label!==standings[i].label);if(opp){pairs.push(makeMatch({label:standings[i].label,names:standings[i].names},{label:opp.label,names:opp.names}));used.add(standings[i].label);used.add(opp.label)}else{standings[i].wins++;standings[i].points++;used.add(standings[i].label)}}if(!pairs.length){t.swissComplete=true;return}t.swissRound=(t.swissRound||1)+1;t.rounds.push(pairs)}
+function numberTournamentMatches(t){let n=1;[...(t.rounds||[]).flat(),...(t.wbRounds||[]).flat(),...(t.lbRounds||[]).flat(),...(t.grandFinal?[t.grandFinal]:[]),...(t.grandFinalResetMatch?[t.grandFinalResetMatch]:[])].forEach(m=>{if(!m.displayNumber)m.displayNumber=n++})}
+function resolveTournament(){
+ let t=S.tournament,rs=t.rounds;if(t.format!=="single")return;
+ // Push every completed winner into the exact next-bracket slot that references its game.
+ for(let pass=0;pass<rs.length+2;pass++){
+   rs.forEach(r=>r.forEach(m=>{
+     ["a","b"].forEach(side=>{
+       let ref=m[side+"From"];if(!ref)return;
+       let src=rs.flat().find(x=>x.id===ref.id);if(!src)return;
+       if(ref.side==="winner"&&src.winner){m[side]=src.winner;m[side+"Players"]=src.winnerPlayers||[]}
+       if(ref.side==="loser"&&src.loser){m[side]=src.loser;m[side+"Players"]=src.loserPlayers||[]}
+     });
+     if(!m.winner&&!m.a&&!m.b&&!m.aFrom&&!m.bFrom)return;
+     if(!m.winner&&m.a&&!m.b&&!m.bFrom){m.winner=m.a;m.winnerPlayers=m.aPlayers||[]}
+     else if(!m.winner&&m.b&&!m.a&&!m.aFrom){m.winner=m.b;m.winnerPlayers=m.bPlayers||[]}
+   }));
+ }
+ if(rs.length&&rs[rs.length-1].length===1&&rs[rs.length-1][0].winner)t.champion=rs[rs.length-1][0].winner;
+}
+function allDoubleMatches(t){return [...(t.wbRounds||[]).flat(),...(t.lbRounds||[]).flat(),...(t.grandFinal?[t.grandFinal]:[]),...(t.grandFinalResetMatch?[t.grandFinalResetMatch]:[])]}
+function completeRound(r){return !!r&&r.every(m=>m.winner||!m.a||!m.b)}
+function resolvedEntrants(r){return (r||[]).filter(m=>m.winner).map(m=>({label:m.winner,names:m.winnerPlayers||[]}))}
+function buildMatchRound(entrants){let out=[];for(let i=0;i<entrants.length;i+=2)out.push(makeMatch(entrants[i],entrants[i+1]||null));return out}
+function sourceMatch(t,ref){return ref?[...allDoubleMatches(t)].find(m=>m.id===ref.id):null}
+function refreshBracketSources(t){
+ let matches=allDoubleMatches(t);
+ matches.forEach(m=>{
+   ["a","b"].forEach(side=>{
+     let ref=m[side+"From"];
+     if(!ref)return;
+     let src=matches.find(x=>x.id===ref.id);if(!src)return;
+     let label=ref.side==="loser"?src.loser:src.winner,players=ref.side==="loser"?src.loserPlayers:src.winnerPlayers;
+     m[side]=label||null;m[side+"Players"]=players||[];
+   });
+ });
+}
+function autoResolveByes(t){
+ allDoubleMatches(t).forEach(m=>{
+   if(m.winner||!m.a&&!m.b)return;
+   if(m.a&&!m.b&&!m.bFrom){m.winner=m.a;m.winnerPlayers=m.aPlayers||[];m.loser=null;m.loserPlayers=[]}
+   if(m.b&&!m.a&&!m.aFrom){m.winner=m.b;m.winnerPlayers=m.bPlayers||[];m.loser=null;m.loserPlayers=[]}
+ });
+}
+function resolveDoubleElimination(t){
+ if(!t.wbRounds?.length)return;
+ // Repeatedly propagate completed winners/losers through every pre-built dependency.
+ // A match is never auto-completed while one of its source games is still pending.
+ for(let pass=0;pass<Math.max(6,allDoubleMatches(t).length);pass++){
+   refreshBracketSources(t);
+   autoResolveByes(t);
+ }
+ refreshBracketSources(t);
+ // The Grand Final only becomes a playable match after both bracket champions exist.
+ let wbFinal=t.wbRounds[t.wbRounds.length-1]?.[0],lbFinal=t.lbRounds[t.lbRounds.length-1]?.[0];
+ if(wbFinal?.winner&&lbFinal?.winner){
+   if(!t.grandFinal)t.grandFinal=makeMatch({label:wbFinal.winner,names:wbFinal.winnerPlayers||[]},{label:lbFinal.winner,names:lbFinal.winnerPlayers||[]});
+   else if(!t.grandFinal.winner){
+     t.grandFinal.a=wbFinal.winner;t.grandFinal.aPlayers=wbFinal.winnerPlayers||[];
+     t.grandFinal.b=lbFinal.winner;t.grandFinal.bPlayers=lbFinal.winnerPlayers||[];
+   }
+ }
+ refreshBracketSources(t);
+ if(t.grandFinal?.winner){
+   if(t.grandFinal.winner===t.grandFinal.a&&!t.grandFinalReset){
+     t.champion=t.grandFinal.winner;
+   }else if(t.grandFinal.winner===t.grandFinal.b&&!t.grandFinalReset){
+     t.grandFinalReset=true;
+     t.grandFinalResetMatch=makeMatch({label:t.grandFinal.a,names:t.grandFinal.aPlayers||[]},{label:t.grandFinal.b,names:t.grandFinal.bPlayers||[]});
+   }
+ }
+ if(t.grandFinalResetMatch?.winner)t.champion=t.grandFinalResetMatch.winner;
+ t.rounds=t.wbRounds;
+}
+let tournamentEditingId=null;
+function findTournamentMatch(id){let t=S.tournament;return allDoubleMatches(t).find(m=>m.id===id)||[...(t.rounds||[])].flat().find(m=>m.id===id)}
+function recordTournamentMatch(id){tournamentEditingId=id;renderTournament()}
+function submitTournamentResult(){
+ let match=findTournamentMatch(tournamentEditingId);if(!match)return;let a=Number(document.getElementById("tmScoreA")?.value),b=Number(document.getElementById("tmScoreB")?.value);if(!Number.isFinite(a)||!Number.isFinite(b)||a<0||b<0||a===b){toast("Enter valid non-tied scores.");return}
+ if(match.winner){toast("That match is already completed.");return}
+ match.scoreA=a;match.scoreB=b;match.pointDiff=Math.abs(a-b);match.winner=a>b?match.a:match.b;match.winnerPlayers=a>b?(match.aPlayers||[]):(match.bPlayers||[]);match.loser=a>b?match.b:match.a;match.loserPlayers=a>b?(match.bPlayers||[]):(match.aPlayers||[]);
+ applyMMRPointDifference(match.aPlayers||[],match.bPlayers||[],a,b);
+ if(S.tournament.format==="winners_losers")resolveDoubleElimination(S.tournament);else if(S.tournament.format==="swiss")updateSwissAfterResult(match);else resolveTournament();
+ tournamentEditingId=null;save();render();toast(match.winner+" advances.");
+}
+function updateSwissAfterResult(match){let t=S.tournament,a=t.standings.find(x=>x.label===match.a),b=t.standings.find(x=>x.label===match.b);if(a&&b){let aw=match.winner===match.a;a[aw?"wins":"losses"]++;b[aw?"losses":"wins"]++;a.points+=aw?1:0;b.points+=aw?0:1;a.opponents.push(b.label);b.opponents.push(a.label)}let current=t.rounds[t.rounds.length-1];if(current.every(m=>m.winner)){if((t.swissRound||1)>=Math.max(3,Math.ceil(Math.log2(t.standings.length))+1)){t.champion=[...t.standings].sort((x,y)=>y.points-y.points||y.wins-x.wins)[0]?.label;t.swissComplete=true}else buildNextSwissRound()}}
+function tournamentHTML(){
+ let t=S.tournament;if(!t.started)return '<div class="panel empty">Start a tournament to generate the bracket.</div>';
+ if(t.format==="single")resolveTournament();else if(t.format==="winners_losers")resolveDoubleElimination(t);
+ numberTournamentMatches(t);
+ let format=t.format==="single"?"🏆 Single Elimination":t.format==="winners_losers"?"🔀 Double Elimination (Winner / Loser Brackets)":"🧩 Swiss",out=`<div class="tour-summary"><div class="tour-stat"><span class="muted">Type</span><b>${t.type==="doubles"?"🏓 Doubles":"👤 Singles"}</b></div><div class="tour-stat"><span class="muted">Format</span><b>${format}</b></div><div class="tour-stat"><span class="muted">Pairings</span><b>${t.pairingMode==="custom"?"✏️ Custom":"🎲 Random"}</b></div></div>`;
+ function slotText(m,side){let label=m[side],ref=m[side+"From"];if(label)return esc(label);if(ref){let src=[...allDoubleMatches(t)].find(x=>x.id===ref.id);let n=src?.displayNumber||src?.id?.replace(/^m/,"")||"?";return `${ref.side==="loser"?"Loser":"Winner"} of Game ${n}`;}return "BYE"}
+ function renderRounds(title,rounds){let o=`<div class="section"><h2>${title}</h2></div><div class="bracket">`;rounds.forEach((r,i)=>{o+=`<div class="bracket-col"><h3>Round ${i+1}</h3>`;r.forEach(m=>{let aw=m.winner===m.a,bw=m.winner===m.b,canEnter=!!(m.a&&m.b&&!m.winner);o+=`<div class="match ${m.winner?"done":(m.a&&m.b?"pending":"")}" data-match-card="${m.id}"><div class="slot ${aw?"winner-slot":""}"><b>${slotText(m,"a")}</b>${m.scoreA!==null?`<strong style="float:right">${m.scoreA}</strong>`:""}</div><div class="slot ${bw?"winner-slot":""}"><b>${slotText(m,"b")}</b>${m.scoreB!==null?`<strong style="float:right">${m.scoreB}</strong>`:""}</div>${m.winner?`<div class="match-scoreline">🏆 ${esc(m.winner)} advances</div>`:(canEnter?`<button class="btn success enter-result" data-match="${m.id}">✎ Enter Match Result</button>`:`<div class="match-scoreline">${m.a||m.b?"Waiting for the previous game(s) to finish.":"Waiting for previous game(s)."}</div>`)}</div>`});o+='</div>'});return o+'</div>'}
+ if(t.format==="single")out+=renderRounds("Main Bracket",t.rounds);
+ if(t.format==="winners_losers"){out+=renderRounds("🏆 Winners Bracket",t.wbRounds||[]);if(t.lbRounds?.length)out+=renderRounds("💥 Losers Bracket",t.lbRounds);if(t.grandFinal)out+=renderRounds("🥇 Grand Final",[[t.grandFinal]]);if(t.grandFinalResetMatch)out+=renderRounds("🔥 Championship Reset",[[t.grandFinalResetMatch]])}
+ if(t.format==="swiss"){out+=`<div class="panel"><b>Swiss Round ${t.swissRound||1}</b><div class="table" style="margin-top:10px"><table><thead><tr><th>Rank</th><th>Player / Team</th><th>Wins</th><th>Losses</th><th>Points</th></tr></thead><tbody>${[...t.standings].sort((a,b)=>b.points-a.points||b.wins-a.wins).map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.label)}</td><td>${x.wins}</td><td>${x.losses}</td><td><b>${x.points}</b></td></tr>`).join("")}</tbody></table></div></div>`;out+=renderRounds("Swiss Matches",t.rounds)}
+ if(t.champion)out+=`<div class="champion">🏆 <b>Champion</b><div style="font-size:24px;margin-top:6px">${esc(t.champion)}</div></div>`;return out;
+}
+function renderTournament(){
+ let t=S.tournament;document.getElementById("tournamentStatus").textContent=t.started?(t.champion?"Tournament Complete":"Tournament In Progress"):"Not started";document.getElementById("tournamentMeta").textContent=t.started?`${t.type==="doubles"?"Doubles":"Singles"} • ${t.format==="single"?"Single Elimination":t.format==="winners_losers"?"Double Elimination":"Swiss"}`:"";
+ let setup=document.getElementById("pairingSetup");if(setup&&!t.started)setup.innerHTML=pairingEditorHTML();
+ let base=tournamentHTML();document.getElementById("bracketContent").innerHTML=base;
+ document.querySelectorAll("[data-match]").forEach(b=>b.onclick=()=>recordTournamentMatch(b.dataset.match));
+ if(tournamentEditingId){let mm=findTournamentMatch(tournamentEditingId),card=document.querySelector(`[data-match-card="${tournamentEditingId}"]`);if(mm&&card&&!mm.winner&&mm.a&&mm.b){let form=document.createElement("div");form.className="match-entry";form.innerHTML=`<div class="muted" style="font-size:11px;margin-top:9px">ENTER MATCH RESULT</div><div class="swap-row" style="margin-top:7px"><input id="tmScoreA" class="score" type="number" min="0" placeholder="${esc(mm.a)} score" style="width:90px"><span>–</span><input id="tmScoreB" class="score" type="number" min="0" placeholder="${esc(mm.b)} score" style="width:90px"><button class="btn success" id="submitTournamentResult">🏆 Record Result</button><button class="btn" id="cancelTournamentResult">Cancel</button></div>`;card.appendChild(form)}}
+ document.getElementById("submitTournamentResult")?.addEventListener("click",submitTournamentResult);document.getElementById("cancelTournamentResult")?.addEventListener("click",()=>{tournamentEditingId=null;renderTournament()});document.getElementById("applyPairings")?.addEventListener("click",()=>{let p=readPairingDraft();if(p.length<2){toast("Add at least two valid pairings.");return}let seen=p.flatMap(x=>x.names);if(new Set(seen).size!==seen.length){toast("A player can only appear once.");return}S.tournament.draft=p;save();renderTournament();toast("Pairings saved. Click Start / Rebuild Tournament to use them.")});document.getElementById("randomizePairings")?.addEventListener("click",()=>{S.tournament.draft=pairingDraft(document.getElementById("tournamentType").value);save();renderTournament();});
+}
+function syncTournamentType(){let el=document.getElementById("tournamentType"),fmt=document.getElementById("tournamentFormat"),pm=document.getElementById("pairingMode");if(el)el.value=S.tournament.type||"singles";if(fmt)fmt.value=S.tournament.format||"single";if(pm)pm.value=S.tournament.pairingMode||"random"}
+
+
+function renderSportsTicker(){
+ let el=document.getElementById("sportsTickerTrack");if(!el)return;
+ if(S.tickerCleared){el.innerHTML="";return}
+ let games=S.games.slice().sort((a,b)=>new Date(b.time||0)-new Date(a.time||0));
+ let recent=games.slice(0,8);
+ let recentItems=recent.map(g=>{
+   let t1=g.team1.map(esc).join("/");
+   let t2=g.team2.map(esc).join("/");
+   let win1=g.winner===1,win2=g.winner===2;
+   let left=win1?`<span class="ticker-win">${t1}</span>`:`<span>${t1}</span>`;
+   let right=win2?`<span class="ticker-win">${t2}</span>`:`<span>${t2}</span>`;
+   return `<span class="ticker-item"><strong>MATCH ${esc(g.round)}:</strong><span class="ticker-sep"> </span>${left}<span class="ticker-score"> ${g.s1}-${g.s2} </span>${right}</span>`;
+ }).join('<span class="ticker-sep"> • </span>');
+ let upcoming=(S.rotation||[]).slice(0,5).map(g=>{
+   let t1=g.team1.map(esc).join("/");
+   let t2=g.team2.map(esc).join("/");
+   return `<span class="ticker-item"><span class="ticker-upcoming">MATCH ${esc(g.round)}: ${t1} vs ${t2}</span></span>`;
+ }).join('<span class="ticker-sep"> • </span>');
+ let sections=[];
+ if(recentItems)sections.push(recentItems);
+ if(upcoming)sections.push(`<span class="ticker-item"><strong class="ticker-upcoming">UPCOMING MATCHES:</strong><span class="ticker-sep"> </span>${upcoming}</span>`);
+ let items=sections.length?sections.join('<span class="ticker-sep">  •  </span>'):`<span class="ticker-item"><strong>J'S PICKLEHUB</strong><span class="ticker-sep"> • </span>Ready for the next match</span>`;
+ el.innerHTML=`<div class="ticker-set">${items}</div><div class="ticker-set" aria-hidden="true">${items}</div>`;
+}
+function render(){
+renderSportsTicker();
+let a=stats(),sg=sessionGames(),total=sg.reduce((n,g)=>n+g.s1+g.s2,0),avg=a.length?a.reduce((n,x)=>n+x.pct,0)/a.length:0;
+document.getElementById("dPlayers").textContent=active().length;document.getElementById("dGames").textContent=sg.length;document.getElementById("dPoints").textContent=total;document.getElementById("dRound").textContent=S.round;document.getElementById("dLeader").textContent=(a.reduce((best,x)=>!best||x.mmr>best.mmr?x:best,null)?.name)||"—";document.getElementById("dBest").textContent=((Math.max(0,...a.map(x=>x.pct)))*100).toFixed(2)+"%";document.getElementById("dPF").textContent=Math.max(0,...a.map(x=>x.pf));document.getElementById("dAvg").textContent=(avg*100).toFixed(2)+"%";document.getElementById("sessionName").textContent=S.session?"🎾 "+S.session.name:"No active session";document.getElementById("sessionMeta").textContent=S.session?"Started "+new Date(S.session.startedAt).toLocaleString()+" • "+sg.length+" games this session • "+(S.courts||1)+" court"+((S.courts||1)===1?"":"s"):"Start a session before generating games or tournaments.";document.getElementById("endSession").disabled=!S.session;let cc=document.getElementById("courtCount");if(cc){cc.value=String(S.courts||1);cc.disabled=!S.session;}
+document.getElementById("dashRotation").innerHTML=rotationHTML();document.getElementById("dashStats").innerHTML=tableHTML();document.getElementById("statsContent").innerHTML=tableHTML();renderGame();renderPlayers();renderHistory();renderTournament();syncTournamentType();renderScoreboard();
+}
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{let p=b.dataset.page;S.mode=p==="tournament"?"tournament":"roundrobin";save();show(p);if(p==="scoreboard")renderScoreboard()});
+document.getElementById("newSession").onclick=newSession;document.getElementById("endSession").onclick=endSession;document.getElementById("generate").onclick=generate;document.getElementById("generate2").onclick=generate;document.getElementById("queueSingles").onclick=queueSinglesDialog;document.getElementById("queueSingles2").onclick=queueSinglesDialog;document.getElementById("scoreboardBack").onclick=()=>show("game");
+document.getElementById("exportPdf")?.addEventListener("click",exportSessionPDF);document.getElementById("exportJpeg")?.addEventListener("click",exportSessionJPEG);
+document.getElementById("clearHistory")?.addEventListener("click",clearHistory);
+document.getElementById("courtCount").onchange=()=>{let n=Math.max(1,Math.min(4,Number(document.getElementById("courtCount").value)||1));if(liveGames().length>n){toast("Finish the extra live court games before reducing the number of courts.");document.getElementById("courtCount").value=String(S.courts);return}S.courts=n;if(S.session)S.session.courts=n;startAvailableGames();save();render();toast(n+" court"+(n===1?"":"s")+" selected. Available courts will fill automatically.")};
+document.getElementById("startTournament").onclick=createTournament;
+document.getElementById("tournamentType").onchange=()=>{S.tournament.type=document.getElementById("tournamentType").value;S.tournament.draft=pairingDraft(S.tournament.type);save();renderTournament();};
+document.getElementById("tournamentFormat").onchange=()=>{S.tournament.format=document.getElementById("tournamentFormat").value;save();};
+document.getElementById("pairingMode").onchange=()=>{S.tournament.pairingMode=document.getElementById("pairingMode").value;S.tournament.draft=pairingDraft(document.getElementById("tournamentType").value);save();renderTournament();};
+document.getElementById("resetTournament").onclick=()=>{if(confirm("Reset the tournament AND clear the current dashboard/session game data? Previous completed sessions in History will remain available.")){let type=document.getElementById("tournamentType")?.value||S.tournament.type||"singles";let id=currentSessionId();if(id)S.games=S.games.filter(g=>g.sessionId!==id);S.round=0;S.current=null;S.liveGames=[];S.rotation=[];S.scoreboards={};S.queueNeedsRegenerate=false;S.players.forEach(p=>{p.mmr=500;p.startingMMR=500});S.tournament=JSON.parse(JSON.stringify(empty.tournament));S.tournament.type=type;S.tournament.format="single";S.tournament.pairingMode="random";S.tournament.draft=pairingDraft(type);tournamentEditingId=null;save();render();show("dashboard");toast("Tournament and current dashboard data reset. MMR returned to 500.")}};
+document.getElementById("add").onclick=()=>{let i=document.getElementById("newPlayer"),n=i.value.trim();if(!n)return toast("Enter a player name.");if(S.players.some(p=>p.name.toLowerCase()===n.toLowerCase()))return toast("Player already exists.");S.players.push({name:n,active:true,mmr:500,startingMMR:500});i.value="";S.queueNeedsRegenerate=true;save();render();toast(n+" added! The current queue was kept. Generate 3 Games to include the new player.")};
+document.getElementById("newPlayer").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("add").click()});
+document.getElementById("reset").onclick=()=>{if(confirm("Reset the current session games, rotation, current round and results? Your session history will remain available.")){let id=currentSessionId();if(id)S.games=S.games.filter(g=>g.sessionId!==id);S.round=0;S.current=null;S.liveGames=[];S.scoreboards={};S.rotation=[];S.queueNeedsRegenerate=false;save();render();toast("Current session results reset. History from other sessions is preserved.")}};
+render();
+</script>
+</body>
+</html>
