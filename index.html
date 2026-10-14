@@ -71,18 +71,9 @@ body.viewer .app main button,body.viewer .app main input,body.viewer .app main s
 <div id="onlineGate" class="online-gate">
   <div class="online-card">
     <div class="online-topline">🏓 J'S PICKLEHUB · ONLINE</div>
-    <h1>Connect to shared Picklehub</h1>
-    <p>This version keeps your existing Picklehub interface. Enter your Supabase project details once on this device, then sign in with an account assigned an <b>admin</b> or <b>viewer</b> role.</p>
-    <div id="configFields">
-      <label for="supabaseUrl">Supabase Project URL</label>
-      <input id="supabaseUrl" type="url" placeholder="https://your-project.supabase.co" autocomplete="url">
-      <label for="supabaseKey">Supabase Publishable key</label>
-      <input id="supabaseKey" type="password" placeholder="sb_publishable_..." autocomplete="off">
-      <div class="online-row">
-        <button class="btn primary" id="connectSupabase">Save connection details</button>
-      </div>
-      <div class="online-help">Use only the Project URL and Publishable key. Never enter a secret/service-role key here. These connection details are saved in this browser only; they are not admin credentials.</div>
-    </div>
+    <h1>Sign in to J's Picklehub</h1>
+    <p>Your Picklehub connection is configured automatically. Sign in with your account assigned an <b>admin</b> or <b>viewer</b> role.</p>
+    <div id="configFields" style="display:none"></div>
     <div id="loginFields" style="display:none">
       <label for="authEmail">Account email</label>
       <input id="authEmail" type="email" placeholder="you@example.com" autocomplete="username">
@@ -90,7 +81,6 @@ body.viewer .app main button,body.viewer .app main input,body.viewer .app main s
       <input id="authPassword" type="password" placeholder="Your Supabase Auth password" autocomplete="current-password">
       <div class="online-row">
         <button class="btn primary" id="loginButton">Sign in</button>
-        <button class="btn" id="changeConnection">Change connection</button>
       </div>
       <div class="online-help">Create admin/viewer accounts in Supabase Authentication → Users and assign roles in public.picklehub_roles. This sign-in uses Supabase Auth, not a password embedded in this HTML.</div>
     </div>
@@ -239,7 +229,8 @@ try{
 let supabaseClient=null, onlineUser=null, onlineRole=null, onlineReady=false;
 let lastSharedSnapshot=null, remoteWritePending=false, remoteSaveTimer=null, remoteChannel=null;
 let remoteSaveChain=Promise.resolve();
-const CONFIG_KEY="jPicklehubSupabaseConfig_v1";
+const SUPABASE_PROJECT_URL="https://wifnlxuagvubqozguubm.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_mtPGbkCIXAhNMmz4x3O_TA_zhu7dd4y";
 function cloneState(v){return JSON.parse(JSON.stringify(v))}
 function setOnlineStatus(msg){const el=document.getElementById("onlineStatus");if(el)el.textContent=msg}
 function showGate(mode){
@@ -248,7 +239,6 @@ function showGate(mode){
  document.getElementById("onlineGate").style.display="flex";
  document.body.classList.remove("online-ready","viewer");
 }
-function configFromBrowser(){try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||"null")}catch(e){return null}}
 function configureSupabase(url,key){
  if(!window.supabase||!window.supabase.createClient)throw new Error("Supabase client library did not load. Check your internet connection and refresh.");
  supabaseClient=window.supabase.createClient(url,key);
@@ -375,27 +365,15 @@ async function connectAndShowLogin(url,key){
  setOnlineStatus("Connection saved. Sign in with your Supabase Auth account.");
 }
 async function startupOnline(){
- const cfg=configFromBrowser();
- if(cfg && cfg.url && cfg.key){
-   document.getElementById("supabaseUrl").value=cfg.url;
-   document.getElementById("supabaseKey").value=cfg.key;
-   try{await connectAndShowLogin(cfg.url,cfg.key)}catch(e){showGate("login");setOnlineStatus(e.message||String(e))}
- }else showGate("config");
+  document.getElementById("configFields").style.display="none";
+  showGate("login");
+  try{
+    await connectAndShowLogin(SUPABASE_PROJECT_URL,SUPABASE_PUBLISHABLE_KEY);
+  }catch(e){
+    showGate("login");
+    setOnlineStatus((e.message||String(e))+" If this continues, check the Supabase project URL/key and network connection.");
+  }
 }
-document.getElementById("connectSupabase").addEventListener("click",async()=>{
- const url=document.getElementById("supabaseUrl").value.trim().replace(/\/+$/,"");
- const key=document.getElementById("supabaseKey").value.trim();
- if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url))return setOnlineStatus("Enter a valid Supabase Project URL, for example https://your-project.supabase.co");
- if(!key)return setOnlineStatus("Enter your Supabase Publishable key.");
- try{
-   localStorage.setItem(CONFIG_KEY,JSON.stringify({url,key}));
-   await connectAndShowLogin(url,key);
- }catch(e){setOnlineStatus(e.message||String(e))}
-});
-document.getElementById("changeConnection").addEventListener("click",()=>{
- if(supabaseClient)supabaseClient.auth.signOut().catch(()=>{});
- showGate("config");setOnlineStatus("Update the Project URL or Publishable key, then save again.");
-});
 document.getElementById("loginButton").addEventListener("click",async()=>{
  const email=document.getElementById("authEmail").value.trim();
  const password=document.getElementById("authPassword").value;
