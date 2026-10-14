@@ -51,15 +51,59 @@ main{margin-top:20px;width:100%;display:block}.page{display:none;width:100%;max-
 .btn:disabled{cursor:not-allowed;opacity:.45;transform:none!important;box-shadow:none!important;filter:none!important}
 @media(prefers-reduced-motion:reduce){.ticker-track,.ambient-beam{animation:none}.ticker-track{transform:none}}
 
+
+/* Online access gate: separate from the existing Picklehub interface */
+.online-gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px;background:radial-gradient(circle at 20% 15%,#251544 0%,transparent 35%),linear-gradient(135deg,#07060b,#0d0916)}
+.online-card{width:min(100%,520px);padding:26px;background:#15111f;border:1px solid #44315d;border-radius:18px;box-shadow:0 20px 80px #0008}
+.online-card h1{font-size:24px;margin:0 0 8px}.online-card p{color:#aaa0bb;line-height:1.55}.online-card label{display:block;font-size:12px;color:#c9bfd8;margin:13px 0 6px}
+.online-card input{width:100%;padding:12px;background:#0e0b14;color:#fff;border:1px solid #44315d;border-radius:10px;outline:none}
+.online-card .btn{margin-top:14px}.online-status{font-size:13px;line-height:1.5;color:#c4b5fd;min-height:20px;margin-top:12px;white-space:pre-wrap}
+.online-help{font-size:12px;color:#aaa0bb;margin-top:12px}.online-row{display:flex;gap:8px;flex-wrap:wrap}.online-row>*{flex:1}
+body.online-ready .app{display:block}
+body:not(.online-ready) .app{display:none}
+body.viewer .app main button,body.viewer .app main input,body.viewer .app main select,body.viewer .app main textarea{pointer-events:none;opacity:.42}
+.online-topline{font-size:11px;color:#aaa0bb;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+
 </style>
 </head>
 <body>
+
+<div id="onlineGate" class="online-gate">
+  <div class="online-card">
+    <div class="online-topline">🏓 J'S PICKLEHUB · ONLINE</div>
+    <h1>Connect to shared Picklehub</h1>
+    <p>This version keeps your existing Picklehub interface. Enter your Supabase project details once on this device, then sign in with an account assigned an <b>admin</b> or <b>viewer</b> role.</p>
+    <div id="configFields">
+      <label for="supabaseUrl">Supabase Project URL</label>
+      <input id="supabaseUrl" type="url" placeholder="https://your-project.supabase.co" autocomplete="url">
+      <label for="supabaseKey">Supabase Publishable key</label>
+      <input id="supabaseKey" type="password" placeholder="sb_publishable_..." autocomplete="off">
+      <div class="online-row">
+        <button class="btn primary" id="connectSupabase">Save connection details</button>
+      </div>
+      <div class="online-help">Use only the Project URL and Publishable key. Never enter a secret/service-role key here. These connection details are saved in this browser only; they are not admin credentials.</div>
+    </div>
+    <div id="loginFields" style="display:none">
+      <label for="authEmail">Account email</label>
+      <input id="authEmail" type="email" placeholder="you@example.com" autocomplete="username">
+      <label for="authPassword">Password</label>
+      <input id="authPassword" type="password" placeholder="Your Supabase Auth password" autocomplete="current-password">
+      <div class="online-row">
+        <button class="btn primary" id="loginButton">Sign in</button>
+        <button class="btn" id="changeConnection">Change connection</button>
+      </div>
+      <div class="online-help">Create admin/viewer accounts in Supabase Authentication → Users and assign roles in public.picklehub_roles. This sign-in uses Supabase Auth, not a password embedded in this HTML.</div>
+    </div>
+    <div id="onlineStatus" class="online-status" role="status" aria-live="polite"></div>
+  </div>
+</div>
+
 <div class="app">
 <div class="sports-ticker" aria-label="Recent match results and upcoming matches"><div class="ticker-label">🏓 MATCH CENTER</div><div class="ticker-window"><div class="ticker-track" id="sportsTickerTrack"><div class="ticker-set"><span class="ticker-item"><strong>J's Picklehub</strong><span class="ticker-sep"> • </span>Loading recent results…</span></div><div class="ticker-set"><span class="ticker-item"><strong>J's Picklehub</strong><span class="ticker-sep"> • </span>Loading recent results…</span></div></div></div></div>
 <div class="ambient-beam one"></div><div class="ambient-beam two"></div>
 <header>
 <div class="brand"><div class="logo">🏓</div><div><h1>J's Pickleball Hub </h1><small>• Round Robin + Tournament Mode • Enhanced v26 • </small></div></div>
-<nav><button class="nav active" data-page="dashboard">Dashboard</button><button class="nav" data-page="game">Current Game</button><button class="nav" data-page="scoreboard">📟 Scoreboard</button><button class="nav" data-page="players">Players</button><button class="nav" data-page="history">History</button><button class="nav" data-page="stats">Stats</button><button class="nav" data-page="tournament">🏆 Tournament</button><button class="nav" data-page="scoring">🏓 About </button></nav>
+<nav><button class="nav active" data-page="dashboard">Dashboard</button><button class="nav" data-page="game">Current Game</button><button class="nav" data-page="scoreboard">📟 Scoreboard</button><button class="nav" data-page="players">Players</button><button class="nav" data-page="history">History</button><button class="nav" data-page="stats">Stats</button><button class="nav" data-page="tournament">🏆 Tournament</button><button class="nav" data-page="scoring">🏓 Information</button></nav>
 </header>
 <main>
 <section id="dashboard" class="page active">
@@ -169,6 +213,7 @@ main{margin-top:20px;width:100%;display:block}.page{display:none;width:100%;max-
 </section>
 </main></div><div id="toast" class="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const KEY="pickleballHub_3game_v1";
 const empty={players:[],games:[],sessions:[],session:null,round:0,current:null,liveGames:[],scoreboards:{},rotation:[],courts:1,
@@ -190,7 +235,180 @@ try{
  return s;
 }catch(e){return JSON.parse(JSON.stringify(empty))}
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(S))}
+
+let supabaseClient=null, onlineUser=null, onlineRole=null, onlineReady=false;
+let lastSharedSnapshot=null, remoteWritePending=false, remoteSaveTimer=null, remoteChannel=null;
+let remoteSaveChain=Promise.resolve();
+const CONFIG_KEY="jPicklehubSupabaseConfig_v1";
+function cloneState(v){return JSON.parse(JSON.stringify(v))}
+function setOnlineStatus(msg){const el=document.getElementById("onlineStatus");if(el)el.textContent=msg}
+function showGate(mode){
+ document.getElementById("configFields").style.display=mode==="config"?"block":"none";
+ document.getElementById("loginFields").style.display=mode==="login"?"block":"none";
+ document.getElementById("onlineGate").style.display="flex";
+ document.body.classList.remove("online-ready","viewer");
+}
+function configFromBrowser(){try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||"null")}catch(e){return null}}
+function configureSupabase(url,key){
+ if(!window.supabase||!window.supabase.createClient)throw new Error("Supabase client library did not load. Check your internet connection and refresh.");
+ supabaseClient=window.supabase.createClient(url,key);
+}
+function save(){
+ if(onlineReady && onlineRole!=="admin"){
+   if(lastSharedSnapshot) S=cloneState(lastSharedSnapshot);
+   toast("View-only access: changes are not allowed.");
+   render();
+   return;
+ }
+ localStorage.setItem(KEY,JSON.stringify(S));
+ if(onlineReady && onlineRole==="admin") scheduleRemoteSave();
+}
+function scheduleRemoteSave(){
+ if(!supabaseClient||!onlineUser||onlineRole!=="admin")return;
+ if(remoteSaveTimer)clearTimeout(remoteSaveTimer);
+ remoteSaveTimer=setTimeout(()=>{
+   const payload=cloneState(S);
+   remoteWritePending=true;
+   remoteSaveChain=remoteSaveChain.then(async()=>{
+     const {error}=await supabaseClient.from("picklehub_state").upsert({
+       id:"main",data:payload,updated_at:new Date().toISOString(),updated_by:onlineUser.id
+     });
+     if(error)throw error;
+     lastSharedSnapshot=cloneState(payload);
+   }).catch(err=>{
+     setOnlineStatus("Save to shared database failed: "+(err.message||String(err))+". Your latest changes remain in this browser; do not refresh until connection is restored.");
+     toast("Shared save failed. Check your connection.");
+   }).finally(()=>{remoteWritePending=false;});
+ },250);
+}
+async function fetchSharedState(){
+ const {data,error}=await supabaseClient.from("picklehub_state").select("data,updated_at").eq("id","main").maybeSingle();
+ if(error)throw error;
+ return data;
+}
+function hasMeaningfulLocalState(s){
+ if(!s)return false;
+ const t=s.tournament||{};
+ return !!(
+   (s.players||[]).length || (s.games||[]).length || (s.sessions||[]).length ||
+   s.session || (s.rotation||[]).length || (s.liveGames||[]).length ||
+   (s.scoreboards && Object.keys(s.scoreboards).length) || s.scoreboard ||
+   Number(s.round||0)>0 || t.started || (t.participants||[]).length ||
+   (t.rounds||[]).length || (t.wbRounds||[]).length || (t.lbRounds||[]).length || t.champion
+ );
+}
+async function acceptRemoteState(data){
+ if(!data || !data.data || typeof data.data!=="object")return false;
+ const remote=data.data;
+ const isEmpty=!Object.keys(remote).length || (
+   !(remote.players||[]).length && !(remote.games||[]).length && !(remote.sessions||[]).length && !remote.session
+ );
+ if(isEmpty && onlineRole==="admin" && hasMeaningfulLocalState(S)){
+   const {error}=await supabaseClient.from("picklehub_state").upsert({
+     id:"main",data:cloneState(S),updated_at:new Date().toISOString(),updated_by:onlineUser.id
+   });
+   if(error)throw error;
+   lastSharedSnapshot=cloneState(S);
+   return true;
+ }
+ if(!isEmpty){
+   S=Object.assign({},empty,remote);
+   localStorage.setItem(KEY,JSON.stringify(S));
+   lastSharedSnapshot=cloneState(S);
+ } else if(onlineRole==="viewer"){
+   // A viewer must never fall back to unrelated browser-local data.
+   S=cloneState(empty);
+   lastSharedSnapshot=cloneState(S);
+   localStorage.setItem(KEY,JSON.stringify(S));
+ }
+ return true;
+}
+async function initializeAfterLogin(){
+ const {data:{user},error:authErr}=await supabaseClient.auth.getUser();
+ if(authErr||!user)throw new Error("Please sign in again.");
+ onlineUser=user;
+ const {data:roleRow,error:roleErr}=await supabaseClient.from("picklehub_roles").select("role").eq("user_id",user.id).maybeSingle();
+ if(roleErr)throw new Error("Could not check your role. Confirm the SQL setup and picklehub_roles table. "+roleErr.message);
+ if(!roleRow || !["admin","viewer"].includes(roleRow.role))throw new Error("This account has no admin/viewer role yet. Create the user in Authentication → Users, then assign its role in public.picklehub_roles.");
+ onlineRole=roleRow.role;
+ const remote=await fetchSharedState();
+ if(!remote)throw new Error("The shared state row is missing. Run the database setup SQL before connecting the app.");
+ await acceptRemoteState(remote);
+ if(!lastSharedSnapshot)lastSharedSnapshot=cloneState(S);
+ onlineReady=true;
+ document.body.classList.add("online-ready");
+ document.body.classList.toggle("viewer",onlineRole==="viewer");
+ document.getElementById("onlineGate").style.display="none";
+ document.querySelector(".brand small").textContent="• Round Robin + Tournament Mode • Online "+(onlineRole==="admin"?"ADMIN":"VIEW ONLY")+" •";
+ // Show a small account/logout control without changing the existing layout.
+ let authBar=document.getElementById("onlineAccountBar");
+ if(!authBar){
+   authBar=document.createElement("div");authBar.id="onlineAccountBar";
+   authBar.style.cssText="position:fixed;right:12px;bottom:12px;z-index:30;background:#15111f;border:1px solid #44315d;border-radius:10px;padding:8px 11px;font-size:11px;color:#c9bfd8;box-shadow:0 8px 24px #0008";
+   document.body.appendChild(authBar);
+ }
+ authBar.innerHTML=esc(user.email||"Signed in")+" · "+onlineRole.toUpperCase()+' · <button class="btn" id="signOutButton" style="padding:4px 7px;margin-left:5px;font-size:11px">Sign out</button>';
+ document.getElementById("signOutButton").onclick=async()=>{await supabaseClient.auth.signOut();onlineReady=false;onlineRole=null;onlineUser=null;if(remoteChannel){await supabaseClient.removeChannel(remoteChannel);remoteChannel=null}authBar.remove();showGate("login");setOnlineStatus("Signed out.")};
+ document.body.classList.toggle("viewer",onlineRole==="viewer");
+ render();
+ setOnlineStatus("");
+ if(remoteChannel)await supabaseClient.removeChannel(remoteChannel);
+ remoteChannel=supabaseClient.channel("picklehub-state-live")
+   .on("postgres_changes",{event:"*",schema:"public",table:"picklehub_state",filter:"id=eq.main"},async(payload)=>{
+     if(remoteWritePending||onlineRole!=="viewer"&&onlineRole!=="admin")return;
+     try{
+       const latest=await fetchSharedState();
+       if(latest && latest.data && !remoteWritePending){
+         S=Object.assign({},empty,latest.data);lastSharedSnapshot=cloneState(S);
+         localStorage.setItem(KEY,JSON.stringify(S));render();
+       }
+     }catch(e){setOnlineStatus("Live update check failed: "+e.message)}
+   }).subscribe();
+ setOnlineStatus("Connected as "+onlineRole+". Shared data is enabled.");
+}
+async function connectAndShowLogin(url,key){
+ configureSupabase(url,key);
+ const {data:{session},error}=await supabaseClient.auth.getSession();
+ if(error)throw error;
+ if(session){await initializeAfterLogin();return}
+ showGate("login");
+ setOnlineStatus("Connection saved. Sign in with your Supabase Auth account.");
+}
+async function startupOnline(){
+ const cfg=configFromBrowser();
+ if(cfg && cfg.url && cfg.key){
+   document.getElementById("supabaseUrl").value=cfg.url;
+   document.getElementById("supabaseKey").value=cfg.key;
+   try{await connectAndShowLogin(cfg.url,cfg.key)}catch(e){showGate("login");setOnlineStatus(e.message||String(e))}
+ }else showGate("config");
+}
+document.getElementById("connectSupabase").addEventListener("click",async()=>{
+ const url=document.getElementById("supabaseUrl").value.trim().replace(/\/+$/,"");
+ const key=document.getElementById("supabaseKey").value.trim();
+ if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url))return setOnlineStatus("Enter a valid Supabase Project URL, for example https://your-project.supabase.co");
+ if(!key)return setOnlineStatus("Enter your Supabase Publishable key.");
+ try{
+   localStorage.setItem(CONFIG_KEY,JSON.stringify({url,key}));
+   await connectAndShowLogin(url,key);
+ }catch(e){setOnlineStatus(e.message||String(e))}
+});
+document.getElementById("changeConnection").addEventListener("click",()=>{
+ if(supabaseClient)supabaseClient.auth.signOut().catch(()=>{});
+ showGate("config");setOnlineStatus("Update the Project URL or Publishable key, then save again.");
+});
+document.getElementById("loginButton").addEventListener("click",async()=>{
+ const email=document.getElementById("authEmail").value.trim();
+ const password=document.getElementById("authPassword").value;
+ if(!email||!password)return setOnlineStatus("Enter your account email and password.");
+ try{
+   setOnlineStatus("Signing in…");
+   const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+   if(error)throw error;
+   await initializeAfterLogin();
+ }catch(e){setOnlineStatus(e.message||String(e))}
+});
+document.getElementById("authPassword").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginButton").click()});
+
 function esc(x){return String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function toast(x){let e=document.getElementById("toast");e.textContent=x;e.style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>e.style.display="none",2200)}
 function currentSessionId(){return S.session?.id||null}
@@ -1008,13 +1226,28 @@ function renderSportsTicker(){
  let items=sections.length?sections.join('<span class="ticker-sep">  •  </span>'):`<span class="ticker-item"><strong>J'S PICKLEHUB</strong><span class="ticker-sep"> • </span>Ready for the next match</span>`;
  el.innerHTML=`<div class="ticker-set">${items}</div><div class="ticker-set" aria-hidden="true">${items}</div>`;
 }
+function applyOnlineRoleUI(){
+ if(!onlineReady)return;
+ const viewer=onlineRole==="viewer";
+ document.body.classList.toggle("viewer",viewer);
+ document.querySelectorAll(".app main button,.app main input,.app main select,.app main textarea").forEach(el=>{
+   if(viewer){
+     if(!el.dataset.onlineRoleDisabled){el.dataset.onlineRoleDisabled="true";el.dataset.onlineOriginalDisabled=el.disabled?"true":"false"}
+     el.disabled=true;el.setAttribute("aria-disabled","true");
+   } else if(el.dataset.onlineRoleDisabled==="true"){
+     el.disabled=el.dataset.onlineOriginalDisabled==="true";
+     delete el.dataset.onlineRoleDisabled;delete el.dataset.onlineOriginalDisabled;
+     el.removeAttribute("aria-disabled");
+   }
+ });
+}
 function render(){
 renderSportsTicker();
 let a=stats(),sg=sessionGames(),total=sg.reduce((n,g)=>n+g.s1+g.s2,0),avg=a.length?a.reduce((n,x)=>n+x.pct,0)/a.length:0;
 document.getElementById("dPlayers").textContent=active().length;document.getElementById("dGames").textContent=sg.length;document.getElementById("dPoints").textContent=total;document.getElementById("dRound").textContent=S.round;document.getElementById("dLeader").textContent=(a.reduce((best,x)=>!best||x.mmr>best.mmr?x:best,null)?.name)||"—";document.getElementById("dBest").textContent=((Math.max(0,...a.map(x=>x.pct)))*100).toFixed(2)+"%";document.getElementById("dPF").textContent=Math.max(0,...a.map(x=>x.pf));document.getElementById("dAvg").textContent=(avg*100).toFixed(2)+"%";document.getElementById("sessionName").textContent=S.session?"🎾 "+S.session.name:"No active session";document.getElementById("sessionMeta").textContent=S.session?"Started "+new Date(S.session.startedAt).toLocaleString()+" • "+sg.length+" games this session • "+(S.courts||1)+" court"+((S.courts||1)===1?"":"s"):"Start a session before generating games or tournaments.";document.getElementById("endSession").disabled=!S.session;let cc=document.getElementById("courtCount");if(cc){cc.value=String(S.courts||1);cc.disabled=!S.session;}
-document.getElementById("dashRotation").innerHTML=rotationHTML();document.getElementById("dashStats").innerHTML=tableHTML();document.getElementById("statsContent").innerHTML=tableHTML();renderGame();renderPlayers();renderHistory();renderTournament();syncTournamentType();renderScoreboard();
+document.getElementById("dashRotation").innerHTML=rotationHTML();document.getElementById("dashStats").innerHTML=tableHTML();document.getElementById("statsContent").innerHTML=tableHTML();renderGame();renderPlayers();renderHistory();renderTournament();syncTournamentType();renderScoreboard();applyOnlineRoleUI();
 }
-document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{let p=b.dataset.page;S.mode=p==="tournament"?"tournament":"roundrobin";save();show(p);if(p==="scoreboard")renderScoreboard()});
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{let p=b.dataset.page;if(onlineRole!=="viewer"){S.mode=p==="tournament"?"tournament":"roundrobin";save()}show(p);if(p==="scoreboard")renderScoreboard()});
 document.getElementById("newSession").onclick=newSession;document.getElementById("endSession").onclick=endSession;document.getElementById("generate").onclick=generate;document.getElementById("generate2").onclick=generate;document.getElementById("queueSingles").onclick=queueSinglesDialog;document.getElementById("queueSingles2").onclick=queueSinglesDialog;document.getElementById("scoreboardBack").onclick=()=>show("game");
 document.getElementById("exportPdf")?.addEventListener("click",exportSessionPDF);document.getElementById("exportJpeg")?.addEventListener("click",exportSessionJPEG);
 document.getElementById("clearHistory")?.addEventListener("click",clearHistory);
@@ -1027,7 +1260,7 @@ document.getElementById("resetTournament").onclick=()=>{if(confirm("Reset the to
 document.getElementById("add").onclick=()=>{let i=document.getElementById("newPlayer"),n=i.value.trim();if(!n)return toast("Enter a player name.");if(S.players.some(p=>p.name.toLowerCase()===n.toLowerCase()))return toast("Player already exists.");S.players.push({name:n,active:true,mmr:500,startingMMR:500});i.value="";S.queueNeedsRegenerate=true;save();render();toast(n+" added! The current queue was kept. Generate 3 Games to include the new player.")};
 document.getElementById("newPlayer").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("add").click()});
 document.getElementById("reset").onclick=()=>{if(confirm("Reset the current session games, rotation, current round and results? Your session history will remain available.")){let id=currentSessionId();if(id)S.games=S.games.filter(g=>g.sessionId!==id);S.round=0;S.current=null;S.liveGames=[];S.scoreboards={};S.rotation=[];S.queueNeedsRegenerate=false;save();render();toast("Current session results reset. History from other sessions is preserved.")}};
-render();
+startupOnline();
 </script>
 </body>
 </html>
