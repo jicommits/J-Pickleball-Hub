@@ -57,40 +57,21 @@ main{margin-top:20px;width:100%;display:block}.page{display:none;width:100%;max-
 .online-card{width:min(100%,520px);padding:26px;background:#15111f;border:1px solid #44315d;border-radius:18px;box-shadow:0 20px 80px #0008}
 .online-card h1{font-size:24px;margin:0 0 8px}.online-card p{color:#aaa0bb;line-height:1.55}.online-card label{display:block;font-size:12px;color:#c9bfd8;margin:13px 0 6px}
 .online-card input{width:100%;padding:12px;background:#0e0b14;color:#fff;border:1px solid #44315d;border-radius:10px;outline:none}
-.online-card .btn{margin-top:14px}.online-status{font-size:13px;line-height:1.5;color:#c4b5fd;min-height:20px;margin-top:12px;white-space:pre-wrap}
-.online-help {
-  text-align: center;
-  width: 100%;
-  margin-top: 10px;
-  margin-bottom: 12px;
-  font-size: 11px;
-  line-height: 1.5;
-}
-  
+.online-card .btn{margin-top:14px}
+.online-card #loginButton{margin-bottom:0}
+.online-status{font-size:13px;line-height:1.5;color:#c4b5fd;min-height:20px;margin:12px auto 0;white-space:pre-wrap;text-align:center;width:100%}
+.online-help{font-size:12px;color:#aaa0bb;margin:10px 0 12px;text-align:center;width:100%;line-height:1.5}
 .online-row{display:flex;gap:8px;flex-wrap:wrap}.online-row>*{flex:1}
+.online-topline{text-align:center;width:100%}
+#onlineAccountBar{position:fixed;top:12px;right:16px;bottom:auto;z-index:1000;display:flex;align-items:center;gap:10px;background:#15111f;border:1px solid #44315d;border-radius:12px;padding:8px 12px;font-size:12px;color:#c9bfd8;box-shadow:0 8px 24px #0008}
+#onlineAccountBar .account-name{font-weight:700;color:#fff;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#onlineAccountBar .account-role{font-size:10px;color:#aaa0bb}
+#onlineAccountBar #signOutButton{padding:6px 10px;margin:0;font-size:11px}
+@media(max-width:600px){#onlineAccountBar{top:8px;right:8px;gap:6px;padding:6px 8px}.online-card{padding:22px}.online-card h1{font-size:22px}}
 body.online-ready .app{display:block}
 body:not(.online-ready) .app{display:none}
 body.viewer .app main button,body.viewer .app main input,body.viewer .app main select,body.viewer .app main textarea{pointer-events:none;opacity:.42}
 .online-topline{font-size:11px;color:#aaa0bb;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
-  .online-topline {
-  text-align: center;
-  width: 100%;
-}
-
-/* Center the help message */
-.online-help {
-  text-align: center;
-  width: 100%;
-}
-
-/* Center the status messages */
-.online-status {
-  text-align: center;
-  width: 100%;
-  margin: 0 auto;
-  line-height: 1.5;
-  font-size: 8.5px;
-}
 
 </style>
 </head>
@@ -100,17 +81,17 @@ body.viewer .app main button,body.viewer .app main input,body.viewer .app main s
   <div class="online-card">
     <div class="online-topline">🏓 J'S PICKLEHUB · ONLINE</div>
     <h1>Sign in to J's Picklehub</h1>
-    <!--<p>Your Picklehub connection is configured automatically. Sign in with your account assigned an <b>admin</b> or <b>viewer</b> role.</p>-->
+    <p>Your Picklehub connection is configured automatically. Sign in with your account assigned an <b>admin</b> or <b>viewer</b> role.</p>
     <div id="configFields" style="display:none"></div>
     <div id="loginFields" style="display:none">
-      <label for="authEmail">Username</label>
-      <input id="authEmail" type="email" placeholder="Username" autocomplete="username">
+      <label for="authEmail">Account email</label>
+      <input id="authEmail" type="email" placeholder="you@example.com" autocomplete="username">
       <label for="authPassword">Password</label>
-      <input id="authPassword" type="password" placeholder="Password" autocomplete="current-password">
+      <input id="authPassword" type="password" placeholder="Your Supabase Auth password" autocomplete="current-password">
       <div class="online-row">
         <button class="btn primary" id="loginButton">Sign in</button>
       </div>
-      <div class="online-help">To create an account, please contact Jay Montebon </div>
+      <div class="online-help">To create an account, please contact Jay Montebon.</div>
     </div>
     <div id="onlineStatus" class="online-status" role="status" aria-live="polite"></div>
   </div>
@@ -358,15 +339,34 @@ async function initializeAfterLogin(){
  document.body.classList.toggle("viewer",onlineRole==="viewer");
  document.getElementById("onlineGate").style.display="none";
  document.querySelector(".brand small").textContent="• Round Robin + Tournament Mode • Online "+(onlineRole==="admin"?"ADMIN":"VIEW ONLY")+" •";
- // Show a small account/logout control without changing the existing layout.
- let authBar=document.getElementById("onlineAccountBar");
- if(!authBar){
-   authBar=document.createElement("div");authBar.id="onlineAccountBar";
-   authBar.style.cssText="position:fixed;right:12px;bottom:12px;z-index:30;background:#15111f;border:1px solid #44315d;border-radius:10px;padding:8px 11px;font-size:11px;color:#c9bfd8;box-shadow:0 8px 24px #0008";
-   document.body.appendChild(authBar);
+ // Ask for a nickname once, then keep it in Supabase Auth user metadata.
+ let nickname=String(user.user_metadata?.nickname||"").trim();
+ while(!nickname){
+   const entered=window.prompt("What should we call you?\nEnter the nickname that should appear in Picklehub:");
+   if(entered===null){
+     await supabaseClient.auth.signOut();
+     onlineReady=false;onlineRole=null;onlineUser=null;
+     showGate("login");setOnlineStatus("Please sign in again and enter a nickname to continue.");
+     return;
+   }
+   nickname=entered.trim();
+   if(!nickname){window.alert("Please enter a nickname.");}
  }
- authBar.innerHTML=esc(user.email||"Signed in")+" · "+onlineRole.toUpperCase()+' · <button class="btn" id="signOutButton" style="padding:4px 7px;margin-left:5px;font-size:11px">Sign out</button>';
- document.getElementById("signOutButton").onclick=async()=>{await supabaseClient.auth.signOut();onlineReady=false;onlineRole=null;onlineUser=null;if(remoteChannel){await supabaseClient.removeChannel(remoteChannel);remoteChannel=null}authBar.remove();showGate("login");setOnlineStatus("Signed out.")};
+ if(nickname !== String(user.user_metadata?.nickname||"").trim()){
+   const {data:updated,error:updateErr}=await supabaseClient.auth.updateUser({data:{nickname}});
+   if(updateErr)throw new Error("Could not save your nickname: "+updateErr.message);
+   onlineUser=updated.user||user;
+ }
+ let authBar=document.getElementById("onlineAccountBar");
+ if(!authBar){authBar=document.createElement("div");authBar.id="onlineAccountBar";document.body.appendChild(authBar);}
+ authBar.innerHTML='<span class="account-name" title="'+esc(nickname)+'">'+esc(nickname)+'</span><span class="account-role">'+esc(onlineRole.toUpperCase())+'</span><button class="btn" id="signOutButton">Sign out</button>';
+ document.getElementById("signOutButton").onclick=async()=>{
+   const {error}=await supabaseClient.auth.signOut();
+   if(error){setOnlineStatus("Could not sign out: "+error.message);return;}
+   onlineReady=false;onlineRole=null;onlineUser=null;
+   if(remoteChannel){await supabaseClient.removeChannel(remoteChannel);remoteChannel=null}
+   authBar.remove();showGate("login");setOnlineStatus("Signed out.");
+ };
  document.body.classList.toggle("viewer",onlineRole==="viewer");
  render();
  setOnlineStatus("");
