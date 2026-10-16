@@ -69,6 +69,8 @@ main{margin-top:20px;width:100%;display:block}.page{display:none;width:100%;max-
 #onlineAccountBar #signOutButton{padding:6px 10px;margin:0;font-size:11px}
 @media(max-width:600px){#onlineAccountBar{top:8px;right:8px;gap:6px;padding:6px 8px}.online-card{padding:22px}.online-card h1{font-size:22px}}
 body.online-ready .app{display:block}
+body.sport-choosing .app{display:none!important}
+body.sport-choosing #sportChooser{display:flex!important}
 body:not(.online-ready) .app{display:none}
 body.viewer .app main button,body.viewer .app main input,body.viewer .app main select,body.viewer .app main textarea{pointer-events:none;opacity:.42}
 .online-topline{font-size:11px;color:#aaa0bb;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
@@ -79,8 +81,8 @@ body.viewer .app main button,body.viewer .app main input,body.viewer .app main s
 
 <div id="onlineGate" class="online-gate">
   <div class="online-card">
-    <div class="online-topline">🏓 J'S PICKLEHUB · ONLINE</div>
-    <h1>Sign in to J's Picklehub</h1>
+    <div class="online-topline">🏓 J'S MULTI-SPORT HUB · ONLINE</div>
+    <h1>Sign in to J's Sports Hub</h1>
     <!-- <p>Your Picklehub connection is configured automatically. Sign in with your account assigned an <b>admin</b> or <b>viewer</b> role.</p> -->
     <div id="configFields" style="display:none"></div>
     <div id="loginFields" style="display:none">
@@ -97,11 +99,24 @@ body.viewer .app main button,body.viewer .app main input,body.viewer .app main s
   </div>
 </div>
 
+<div id="sportChooser" class="online-gate" style="display:none">
+  <div class="online-card" style="max-width:720px;text-align:center">
+    <div class="online-topline">🏸 MULTI-SPORT HUB</div>
+    <h1>Choose your sport</h1>
+    <p class="muted">Select which system you want to open. Each sport keeps its own players, sessions, matches, and statistics.</p>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px">
+      <button class="btn primary" id="choosePickleball" style="font-size:22px;padding:28px 18px">🏓 Pickleball</button>
+      <button class="btn primary" id="chooseBadminton" style="font-size:22px;padding:28px 18px">🏸 Badminton</button>
+    </div>
+    <div id="sportChooserStatus" class="online-status" role="status" aria-live="polite" style="display:block;margin-top:14px"></div>
+  </div>
+</div>
+
 <div class="app">
 <div class="sports-ticker" aria-label="Recent match results and upcoming matches"><div class="ticker-label">🏓 MATCH CENTER</div><div class="ticker-window"><div class="ticker-track" id="sportsTickerTrack"><div class="ticker-set"><span class="ticker-item"><strong>J's Picklehub</strong><span class="ticker-sep"> • </span>Loading recent results…</span></div><div class="ticker-set"><span class="ticker-item"><strong>J's Picklehub</strong><span class="ticker-sep"> • </span>Loading recent results…</span></div></div></div></div>
 <div class="ambient-beam one"></div><div class="ambient-beam two"></div>
 <header>
-<div class="brand"><div class="logo">🏓</div><div><h1>J's Pickleball Hub </h1><small>• Round Robin + Tournament Mode • Enhanced v26 • </small></div></div>
+<div class="brand"><div class="logo" id="sportLogo">🏓</div><div><h1 id="sportTitle">J's Pickleball Hub</h1><small id="sportSubtitle">• Round Robin + Tournament Mode • Enhanced •</small></div><button class="btn" id="changeSport" style="margin-left:12px">Change Sport</button></div>
 <nav><button class="nav active" data-page="dashboard">Dashboard</button><button class="nav" data-page="game">Current Game</button><button class="nav" data-page="scoreboard">📟 Scoreboard</button><button class="nav" data-page="players">Players</button><button class="nav" data-page="history">History</button><button class="nav" data-page="stats">Stats</button><button class="nav" data-page="tournament">🏆 Tournament</button><button class="nav" data-page="scoring">🏓 Information</button></nav>
 </header>
 <main>
@@ -129,8 +144,8 @@ body.viewer .app main button,body.viewer .app main input,body.viewer .app main s
 <div class="section"><h2>Roster</h2><span class="muted" id="count"></span></div><div id="playersList" class="player-grid"></div>
 </section>
 
-<section id="history" class="page"><div class="hero"><div><h2>📜 Game History</h2><p>Recorded results stay in this browser.</p></div><button class="btn danger" id="clearHistory">🗑️ Clear History</button></div><div class="panel"><div class="section" style="margin-top:0"><h2>📤 Session Export</h2><span class="muted">Export a finished or current session with its stats and match history.</span></div><div class="export-bar"><div class="tour-field"><div class="label">Session</div><select id="exportSession"></select></div><button class="btn primary" id="exportPdf">📄 Export PDF</button><button class="btn" id="exportJpeg">🖼️ Export JPEG</button></div><div class="muted" style="margin-top:9px;font-size:12px">The PDF is a downloadable report, while JPEG creates a shareable image of the same session summary.</div></div><div id="historyContent" style="margin-top:15px"></div></section>
-<section id="stats" class="page"><div class="hero"><div><h2>📊 Player Stats</h2><p>MMR starts at 500 and changes by the point difference of every completed game.</p></div></div><div id="statsContent" style="margin-top:15px"></div></section>
+<section id="history" class="page"><div class="hero"><div><h2>📜 Game History</h2><p>Recorded results stay in this browser.</p></div><button class="btn danger" id="clearHistory">🗑️ Clear History</button></div><div class="panel"><div class="section" style="margin-top:0"><h2>📤 Session Export</h2><span class="muted">Export a finished or current session with its stats and match history.</span></div><div class="export-bar"><div class="tour-field"><div class="label">Session</div><select id="exportSession"></select></div><button class="btn primary" id="exportPdf">📄 Export PDF</button><button class="btn" id="exportJpeg">🖼️ Export JPEG</button></div><div class="muted" style="margin-top:9px;font-size:12px">The PDF is a downloadable report, while JPEG creates a shareable image of the same session summary.</div></div><div id="sessionHistoryContent" style="margin-top:15px"></div><div class="section"><h2>🎾 Recent Match Results</h2><span class="muted">Completed games across sessions</span></div><div id="historyContent" style="margin-top:15px"></div></section>
+<section id="stats" class="page"><div class="hero"><div><h2>📊 Player Stats</h2><p>MMR starts at 500 and changes by the point difference of every completed game.</p></div></div><div class="panel" style="margin-top:15px"><div class="tour-toolbar"><div class="tour-field"><div class="label">Session</div><select id="statsSession" class="court-select" style="width:100%"></select></div><div class="tour-field"><div class="label">Player</div><select id="statsPlayer" class="court-select" style="width:100%"></select></div></div><div class="muted" style="margin-top:8px">Choose a session and player to view stats calculated only from that session’s recorded matches.</div></div><div id="playerStatsDetail" style="margin-top:15px"></div><div class="section"><h2>Session Leaderboard</h2></div><div id="statsContent" style="margin-top:15px"></div></section>
 
 <section id="tournament" class="page">
 <div class="hero"><div><h2>🏆 Tournament Mode</h2><p>Choose singles or doubles, pairing style, and tournament format.</p></div>
@@ -214,13 +229,17 @@ body.viewer .app main button,body.viewer .app main input,body.viewer .app main s
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+let activeSport="pickleball";
+const pickleballInfoHTML=document.getElementById("scoring").innerHTML;
 const KEY="pickleballHub_3game_v1";
+function storageKey(){return activeSport==="badminton"?"badmintonHub_v1":KEY}
+function sportRowId(){return activeSport==="badminton"?"badminton":"main"}
 const empty={players:[],games:[],sessions:[],session:null,round:0,current:null,liveGames:[],scoreboards:{},rotation:[],courts:1,
 tournament:{started:false,type:"singles",format:"single",pairingMode:"random",draft:[],participants:[],rounds:[],wbRounds:[],lbRounds:[],grandFinal:null,grandFinalReset:false,grandFinalResetMatch:null,champion:null,nextId:1,standings:[]}};
 let S=load();
 function load(){
 try{
- let raw=JSON.parse(localStorage.getItem(KEY))||{};
+ let raw=JSON.parse(localStorage.getItem(storageKey()))||{};
  let s=Object.assign({},empty,raw);
  s.players=s.players||[];s.games=s.games||[];s.sessions=s.sessions||[];s.rotation=s.rotation||[];s.liveGames=Array.isArray(s.liveGames)?s.liveGames:[];s.scoreboards=s.scoreboards&&typeof s.scoreboards==="object"?s.scoreboards:{};if(!s.liveGames.length&&s.current)s.liveGames=[s.current];s.current=null;s.courts=Math.max(1,Math.min(4,Number(s.courts)||1));if(s.session&&!s.session.courts)s.session.courts=s.courts;
  s.games.forEach(g=>{if(!g.sessionId)g.sessionId="legacy"});
@@ -246,7 +265,8 @@ function showGate(mode){
  document.getElementById("configFields").style.display=mode==="config"?"block":"none";
  document.getElementById("loginFields").style.display=mode==="login"?"block":"none";
  document.getElementById("onlineGate").style.display="flex";
- document.body.classList.remove("online-ready","viewer");
+ document.body.classList.remove("online-ready","viewer","sport-choosing");
+ const chooser=document.getElementById("sportChooser");if(chooser)chooser.style.display="none";
 }
 function configureSupabase(url,key){
  if(!window.supabase||!window.supabase.createClient)throw new Error("Supabase client library did not load. Check your internet connection and refresh.");
@@ -259,18 +279,18 @@ function save(){
    render();
    return;
  }
- localStorage.setItem(KEY,JSON.stringify(S));
+ localStorage.setItem(storageKey(),JSON.stringify(S));
  if(onlineReady && onlineRole==="admin") scheduleRemoteSave();
 }
 function scheduleRemoteSave(){
  if(!supabaseClient||!onlineUser||onlineRole!=="admin")return;
  if(remoteSaveTimer)clearTimeout(remoteSaveTimer);
+ const rowId=sportRowId(), payload=cloneState(S);
  remoteSaveTimer=setTimeout(()=>{
-   const payload=cloneState(S);
    remoteWritePending=true;
    remoteSaveChain=remoteSaveChain.then(async()=>{
      const {error}=await supabaseClient.from("picklehub_state").upsert({
-       id:"main",data:payload,updated_at:new Date().toISOString(),updated_by:onlineUser.id
+       id:rowId,data:payload,updated_at:new Date().toISOString(),updated_by:onlineUser.id
      });
      if(error)throw error;
      lastSharedSnapshot=cloneState(payload);
@@ -280,8 +300,8 @@ function scheduleRemoteSave(){
    }).finally(()=>{remoteWritePending=false;});
  },250);
 }
-async function fetchSharedState(){
- const {data,error}=await supabaseClient.from("picklehub_state").select("data,updated_at").eq("id","main").maybeSingle();
+async function fetchSharedState(rowId=sportRowId()){
+ const {data,error}=await supabaseClient.from("picklehub_state").select("data,updated_at").eq("id",rowId).maybeSingle();
  if(error)throw error;
  return data;
 }
@@ -296,7 +316,7 @@ function hasMeaningfulLocalState(s){
    (t.rounds||[]).length || (t.wbRounds||[]).length || (t.lbRounds||[]).length || t.champion
  );
 }
-async function acceptRemoteState(data){
+async function acceptRemoteState(data,rowId=sportRowId()){
  if(!data || !data.data || typeof data.data!=="object")return false;
  const remote=data.data;
  const isEmpty=!Object.keys(remote).length || (
@@ -304,7 +324,7 @@ async function acceptRemoteState(data){
  );
  if(isEmpty && onlineRole==="admin" && hasMeaningfulLocalState(S)){
    const {error}=await supabaseClient.from("picklehub_state").upsert({
-     id:"main",data:cloneState(S),updated_at:new Date().toISOString(),updated_by:onlineUser.id
+     id:rowId,data:cloneState(S),updated_at:new Date().toISOString(),updated_by:onlineUser.id
    });
    if(error)throw error;
    lastSharedSnapshot=cloneState(S);
@@ -312,13 +332,13 @@ async function acceptRemoteState(data){
  }
  if(!isEmpty){
    S=Object.assign({},empty,remote);
-   localStorage.setItem(KEY,JSON.stringify(S));
+   localStorage.setItem(storageKey(),JSON.stringify(S));
    lastSharedSnapshot=cloneState(S);
  } else if(onlineRole==="viewer"){
    // A viewer must never fall back to unrelated browser-local data.
    S=cloneState(empty);
    lastSharedSnapshot=cloneState(S);
-   localStorage.setItem(KEY,JSON.stringify(S));
+   localStorage.setItem(storageKey(),JSON.stringify(S));
  }
  return true;
 }
@@ -330,12 +350,14 @@ async function initializeAfterLogin(){
  if(roleErr)throw new Error("Could not check your role. Confirm the SQL setup and picklehub_roles table. "+roleErr.message);
  if(!roleRow || !["admin","viewer"].includes(roleRow.role))throw new Error("This account has no admin/viewer role yet. Create the user in Authentication → Users, then assign its role in public.picklehub_roles.");
  onlineRole=roleRow.role;
- const remote=await fetchSharedState();
- if(!remote)throw new Error("The shared state row is missing. Run the database setup SQL before connecting the app.");
- await acceptRemoteState(remote);
+ activeSport="pickleball";
+ S=load();
+ const remote=await fetchSharedState("main");
+ if(remote)await acceptRemoteState(remote,"main");
+ else if(onlineRole==="viewer")S=cloneState(empty);
  if(!lastSharedSnapshot)lastSharedSnapshot=cloneState(S);
  onlineReady=true;
- document.body.classList.add("online-ready");
+ document.body.classList.add("online-ready","sport-choosing");
  document.body.classList.toggle("viewer",onlineRole==="viewer");
  document.getElementById("onlineGate").style.display="none";
  document.querySelector(".brand small").textContent="• Round Robin + Tournament Mode • Online "+(onlineRole==="admin"?"ADMIN":"VIEW ONLY")+" •";
@@ -345,7 +367,7 @@ async function initializeAfterLogin(){
    const entered=window.prompt("What should we call you?\nEnter the nickname that should appear in Picklehub:");
    if(entered===null){
      await supabaseClient.auth.signOut();
-     onlineReady=false;onlineRole=null;onlineUser=null;
+     onlineReady=false;onlineRole=null;onlineUser=null;document.body.classList.remove("sport-choosing");
      showGate("login");setOnlineStatus("Please sign in again and enter a nickname to continue.");
      return;
    }
@@ -363,27 +385,80 @@ async function initializeAfterLogin(){
  document.getElementById("signOutButton").onclick=async()=>{
    const {error}=await supabaseClient.auth.signOut();
    if(error){setOnlineStatus("Could not sign out: "+error.message);return;}
-   onlineReady=false;onlineRole=null;onlineUser=null;
+   onlineReady=false;onlineRole=null;onlineUser=null;document.body.classList.remove("sport-choosing");document.getElementById("sportChooser").style.display="none";
    if(remoteChannel){await supabaseClient.removeChannel(remoteChannel);remoteChannel=null}
    authBar.remove();showGate("login");setOnlineStatus("Signed out.");
  };
  document.body.classList.toggle("viewer",onlineRole==="viewer");
- render();
+ document.getElementById("sportChooser").style.display="flex";
+ const chooserStatus=document.getElementById("sportChooserStatus");if(chooserStatus)chooserStatus.textContent="";
  setOnlineStatus("");
- if(remoteChannel)await supabaseClient.removeChannel(remoteChannel);
- remoteChannel=supabaseClient.channel("picklehub-state-live")
-   .on("postgres_changes",{event:"*",schema:"public",table:"picklehub_state",filter:"id=eq.main"},async(payload)=>{
-     if(remoteWritePending||onlineRole!=="viewer"&&onlineRole!=="admin")return;
-     try{
-       const latest=await fetchSharedState();
-       if(latest && latest.data && !remoteWritePending){
-         S=Object.assign({},empty,latest.data);lastSharedSnapshot=cloneState(S);
-         localStorage.setItem(KEY,JSON.stringify(S));render();
-       }
-     }catch(e){setOnlineStatus("Live update check failed: "+e.message)}
-   }).subscribe();
- setOnlineStatus("Connected as "+onlineRole+". Shared data is enabled.");
+ setOnlineStatus("Connected as "+onlineRole+". Choose Pickleball or Badminton.");
 }
+function renderSportInfo(){
+ const section=document.getElementById("scoring");if(!section)return;
+ if(activeSport!=="badminton"){
+   section.innerHTML=pickleballInfoHTML;
+ }else{
+   section.innerHTML=`<div class="hero"><div><h2>🏸 Information About Badminton</h2><p>Quick reference for badminton gameplay, rally-point scoring, and odd/even service courts.</p></div></div><div class="cards"><div class="card"><div class="label">Players</div><div class="value" style="font-size:22px">Singles or Doubles</div><div class="muted">Play 1 vs 1 or 2 vs 2.</div></div><div class="card"><div class="label">Game Target</div><div class="value" style="font-size:22px">21 points</div><div class="muted">Win by 2, capped at 30 under standard scoring.</div></div><div class="card"><div class="label">Rally Point</div><div class="value" style="font-size:22px">Every Rally</div><div class="muted">The side that wins a rally scores a point.</div></div><div class="card"><div class="label">Service Court</div><div class="value" style="font-size:22px">Even = Right</div><div class="muted">Even server score serves from the right; odd score from the left.</div></div></div><div class="section"><h2>Badminton scoring and serving</h2></div><div class="panel"><ol style="line-height:1.85;margin:0;padding-left:24px"><li>Each rally awards one point to the side that wins it, regardless of who served.</li><li>A standard game is played to 21 points; a side normally must lead by 2, with a cap at 30.</li><li>When the serving side wins a rally, it scores and continues serving. Its serving court changes according to its new score.</li><li>When the receiving side wins a rally, it scores and takes over service.</li><li>When the serving side's score is even, service is from the right service court; when odd, service is from the left.</li><li>The scoreboard displays two digits for each score (for example, 04 – 09).</li></ol></div>`;
+ }
+}
+
+async function openSport(sport){
+ const chooserStatus=document.getElementById("sportChooserStatus");
+ const chooser=document.getElementById("sportChooser");
+ if(chooserStatus)chooserStatus.textContent="Loading "+(sport==="badminton"?"Badminton":"Pickleball")+"…";
+ const buttons=[document.getElementById("choosePickleball"),document.getElementById("chooseBadminton")];
+ buttons.forEach(b=>{if(b)b.disabled=true});
+ activeSport=sport==="badminton"?"badminton":"pickleball";
+ S=load();
+ const row=sportRowId();
+ try{
+   const remote=await fetchSharedState(row);
+   if(remote) await acceptRemoteState(remote,row);
+   else if(onlineRole==="viewer"){S=cloneState(empty);localStorage.setItem(storageKey(),JSON.stringify(S));lastSharedSnapshot=cloneState(S);}
+   else if(hasMeaningfulLocalState(S)){
+     const {error}=await supabaseClient.from("picklehub_state").upsert({id:row,data:cloneState(S),updated_at:new Date().toISOString(),updated_by:onlineUser.id});
+     if(error)throw error;
+     lastSharedSnapshot=cloneState(S);
+   } else {S=cloneState(empty);lastSharedSnapshot=cloneState(S);}
+ }catch(e){
+   const rawMessage=(e.message||String(e));
+   const isBadmintonConstraint=activeSport==="badminton" && /picklehub_state_id_check|check constraint/i.test(rawMessage);
+   const message="Could not load "+(activeSport==="badminton"?"Badminton":"Pickleball")+" data: "+rawMessage+
+     (isBadmintonConstraint?" — The Supabase table still blocks the separate badminton row. In Supabase SQL Editor, run: ALTER TABLE public.picklehub_state DROP CONSTRAINT IF EXISTS picklehub_state_id_check; ALTER TABLE public.picklehub_state ADD CONSTRAINT picklehub_state_id_check CHECK (id IN ('main','badminton'));":"");
+   setOnlineStatus(message);
+   if(chooserStatus)chooserStatus.textContent=message;
+   buttons.forEach(b=>{if(b)b.disabled=false});
+   return;
+ }
+ buttons.forEach(b=>{if(b)b.disabled=false});
+ if(chooserStatus)chooserStatus.textContent="";
+ document.body.classList.remove("sport-choosing");
+ document.getElementById("sportChooser").style.display="none";
+ document.getElementById("sportLogo").textContent=activeSport==="badminton"?"🏸":"🏓";
+ document.getElementById("sportTitle").textContent=activeSport==="badminton"?"J's Badminton Hub":"J's Pickleball Hub";
+ document.querySelector(".brand small").textContent="• Round Robin + Tournament Mode • "+(activeSport==="badminton"?"Badminton":"Pickleball")+" • Online "+(onlineRole==="admin"?"ADMIN":"VIEW ONLY")+" •";
+ document.querySelector(".ticker-label").textContent=activeSport==="badminton"?"🏸 MATCH CENTER":"🏓 MATCH CENTER";document.querySelector("#history .section h2").textContent=activeSport==="badminton"?"🏸 Recent Match Results":"🎾 Recent Match Results";
+ document.getElementById("changeSport").onclick=async()=>{
+   if(remoteChannel){try{await supabaseClient.removeChannel(remoteChannel)}catch(e){}remoteChannel=null}
+   const chooserStatus=document.getElementById("sportChooserStatus");
+   if(chooserStatus)chooserStatus.textContent="Choose a sport to continue.";
+   document.body.classList.add("sport-choosing");
+   document.getElementById("sportChooser").style.display="flex";
+ };
+ if(remoteChannel)await supabaseClient.removeChannel(remoteChannel);
+ remoteChannel=supabaseClient.channel("sports-state-"+activeSport)
+  .on("postgres_changes",{event:"*",schema:"public",table:"picklehub_state",filter:"id=eq."+row},async()=>{
+   if(remoteWritePending)return;
+   try{const latest=await fetchSharedState(row);if(latest&&latest.data&&!remoteWritePending){S=Object.assign({},empty,latest.data);lastSharedSnapshot=cloneState(S);localStorage.setItem(storageKey(),JSON.stringify(S));render()}}
+   catch(e){setOnlineStatus("Live update check failed: "+e.message)}
+  }).subscribe();
+ renderSportInfo();show("dashboard");render();setOnlineStatus("Connected to "+activeSport+" data.");
+}
+document.getElementById("choosePickleball").onclick=()=>openSport("pickleball");
+document.getElementById("chooseBadminton").onclick=()=>openSport("badminton");
+
 async function connectAndShowLogin(url,key){
  configureSupabase(url,key);
  const {data:{session},error}=await supabaseClient.auth.getSession();
@@ -418,11 +493,11 @@ document.getElementById("authPassword").addEventListener("keydown",e=>{if(e.key=
 function esc(x){return String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function toast(x){let e=document.getElementById("toast");e.textContent=x;e.style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>e.style.display="none",2200)}
 function currentSessionId(){return S.session?.id||null}
-function sessionGames(){let id=currentSessionId();return id?S.games.filter(g=>g.sessionId===id):S.games}
+function sessionGames(){let id=currentSessionId();return id?S.games.filter(g=>g.sessionId===id):[]}
 function requireSession(){if(!S.session){toast("Start a play session first.");show("dashboard");return false}return true}
 function newSession(){
  if(S.liveGames.length){toast("Finish or cancel all live games before starting a new session.");return}
- let name=prompt("Session name:","Pickleball Session "+(S.sessions.length+1));if(name===null)return;name=name.trim();if(!name){toast("Session name cannot be empty.");return}
+ let name=prompt("Session name:",(activeSport==="badminton"?"Badminton":"Pickleball")+" Session "+(S.sessions.length+1));if(name===null)return;name=name.trim();if(!name){toast("Session name cannot be empty.");return}
  let id="s"+Date.now();let courts=Math.max(1,Math.min(4,Number(document.getElementById("courtCount")?.value||S.courts||1)));S.courts=courts;S.session={id,name,startedAt:new Date().toISOString(),courts};S.sessions.unshift({id,name,startedAt:S.session.startedAt,endedAt:null});
  S.round=0;S.rotation=[];S.liveGames=[];S.current=null;S.scoreboards={};S.scoreboard=null;
  S.players.forEach(p=>{p.mmr=500;p.startingMMR=500});
@@ -433,7 +508,7 @@ function endSession(){
  if(!S.session){toast("There is no active session.");return}
  if(S.liveGames.length && !confirm("Live games are still active. End the session anyway? The unfinished games will be discarded."))return;
  let rec=S.sessions.find(x=>x.id===S.session.id);if(rec){rec.endedAt=new Date().toISOString();rec.mmrByPlayer=Object.fromEntries(S.players.map(p=>[p.name,Number(p.mmr??500)]));}
- S.session=null;S.current=null;S.liveGames=[];S.rotation=[];S.scoreboards={};S.scoreboard=null;S.round=0;
+ S.session=null;S.current=null;S.liveGames=[];S.rotation=[];S.scoreboards={};S.scoreboard=null;S.round=0;S.players.forEach(p=>{p.mmr=500;p.startingMMR=500});
  save();render();show("dashboard");toast("Session ended. Your history is preserved.");
 }
 function active(){return S.players.filter(p=>p.active).map(p=>p.name)}
@@ -830,18 +905,22 @@ function renderScoreboard(court=null){
  if(!games.length){e.innerHTML=`<div class="panel score-empty"><div style="font-size:42px">📟</div><h2 style="margin:10px 0 6px">No Active Games</h2><div class="muted">Start or generate games from the Current Game screen.</div></div>`;return}
  if(court==null||!getLiveGame(court))court=games[0].court;
  let g=getLiveGame(court),sb=initScoreboard(court),serving=sb.servingTeam==="A"?g.team1:g.team2;
- let called=`${sb.servingTeam==="A"?sb.scoreA:sb.scoreB} – ${sb.servingTeam==="A"?sb.scoreB:sb.scoreA} – ${sb.serverNumber}`;
+ let isBadminton=activeSport==="badminton";
+ let serviceScore=sb.servingTeam==="A"?sb.scoreA:sb.scoreB;
+ let serviceCourt=serviceScore%2===0?"RIGHT":"LEFT";
+ let badmintonGameOver=isBadminton&&(Math.max(sb.scoreA,sb.scoreB)>=30||(Math.max(sb.scoreA,sb.scoreB)>=21&&Math.abs(sb.scoreA-sb.scoreB)>=2));
+ let called=isBadminton?`${String(sb.scoreA).padStart(2,"0")} – ${String(sb.scoreB).padStart(2,"0")}`:`${sb.servingTeam==="A"?sb.scoreA:sb.scoreB} – ${sb.servingTeam==="A"?sb.scoreB:sb.scoreA} – ${sb.serverNumber}`;
  let undoCount=sb.undoStack.length;
- e.innerHTML=`<div class="panel" style="margin-bottom:15px"><div class="label">LIVE COURTS</div><div class="actions" style="margin-top:8px">${games.map(x=>`<button class="btn ${Number(x.court)===Number(court)?"primary":""}" data-score-court="${x.court}">🏟️ Court ${x.court} • Game ${x.round}</button>`).join("")}</div></div><div class="scoreboard-wrap"><div class="panel scoreboard-top"><div><b>GAME ${g.round} • COURT ${g.court}</b><div class="score-meta"><span>${g.isSingles?"Singles 1v1 • Same score entry":"Traditional Doubles • Side-Out Scoring"}</span><span>Current Call: <b>${called}</b></span></div></div><div class="actions" style="margin-top:0"><button class="btn" id="scoreReset">↺ Reset Game</button><button class="btn" id="scoreGameView">Current Game</button></div></div>
- <div class="panel serving-banner"><div class="serving-label">🏓 SERVING</div><div class="serving-team">${serving.map(esc).join(" / ")}</div><div class="server-indicator">SERVER ${sb.serverNumber}</div><div class="score-call">${sb.servingTeam==="A"?sb.scoreA:sb.scoreB} – ${sb.servingTeam==="A"?sb.scoreB:sb.scoreA} – ${sb.serverNumber}</div></div>
- <div class="scoreboard-board"><div class="score-side ${sb.servingTeam==="A"?"serving-side":""}" style="border-color:#5b3e86"><h2>🟣 ${g.team1.map(esc).join(" / ")}</h2><div class="score-big">${sb.scoreA}</div><div class="team-tag">${sb.servingTeam==="A"?`SERVING • SERVER ${sb.serverNumber}`:"RECEIVING"}</div></div><div class="score-side ${sb.servingTeam==="B"?"serving-side":""}" style="border-color:#285c3c"><h2>🟢 ${g.team2.map(esc).join(" / ")}</h2><div class="score-big">${sb.scoreB}</div><div class="team-tag">${sb.servingTeam==="B"?`SERVING • SERVER ${sb.serverNumber}`:"RECEIVING"}</div></div></div>
- <div class="panel rally-panel"><div class="rally-title">RALLY RESULT</div><div class="rally-buttons"><button class="btn primary rally-btn" id="serveWon">🏓 Serving Team Won Rally</button><button class="btn rally-btn" id="receiveWon">↔ Receiving Team Won Rally</button></div><div class="score-undo"><button class="btn" id="scoreUndo" ${undoCount?"":"disabled"}>↩ Undo</button><span class="undo-count">${undoCount} action${undoCount===1?"":"s"} available</span></div><div class="muted rally-help">Undo is unlimited. Each press reverses exactly one previous rally action, including server and side-out changes.</div></div>
+ e.innerHTML=`<div class="panel" style="margin-bottom:15px"><div class="label">LIVE COURTS</div><div class="actions" style="margin-top:8px">${games.map(x=>`<button class="btn ${Number(x.court)===Number(court)?"primary":""}" data-score-court="${x.court}">🏟️ Court ${x.court} • Game ${x.round}</button>`).join("")}</div></div><div class="scoreboard-wrap"><div class="panel scoreboard-top"><div><b>GAME ${g.round} • COURT ${g.court}</b><div class="score-meta"><span>${isBadminton?(g.isSingles?"Badminton Singles • Rally Point Scoring":"Badminton Doubles • Odd/Even Service Court"):(g.isSingles?"Singles 1v1 • Same score entry":"Traditional Doubles • Side-Out Scoring")}</span><span>Current Call: <b>${called}</b></span></div></div><div class="actions" style="margin-top:0"><button class="btn" id="scoreReset">↺ Reset Game</button><button class="btn" id="scoreGameView">Current Game</button></div></div>
+ <div class="panel serving-banner"><div class="serving-label">🏓 SERVING</div><div class="serving-team">${serving.map(esc).join(" / ")}</div><div class="server-indicator">${isBadminton?"SERVICE COURT • "+serviceCourt+" ("+(serviceScore%2===0?"EVEN":"ODD")+")":"SERVER "+sb.serverNumber}</div><div class="score-call">${called}</div></div>
+ <div class="scoreboard-board"><div class="score-side ${sb.servingTeam==="A"?"serving-side":""}" style="border-color:#5b3e86"><h2>🟣 ${g.team1.map(esc).join(" / ")}</h2><div class="score-big">${isBadminton?String(sb.scoreA).padStart(2,"0"):sb.scoreA}</div><div class="team-tag">${sb.servingTeam==="A"?(isBadminton?"SERVING • "+(sb.scoreA%2===0?"RIGHT COURT":"LEFT COURT"):`SERVING • SERVER ${sb.serverNumber}`):"RECEIVING"}</div></div><div class="score-side ${sb.servingTeam==="B"?"serving-side":""}" style="border-color:#285c3c"><h2>🟢 ${g.team2.map(esc).join(" / ")}</h2><div class="score-big">${isBadminton?String(sb.scoreB).padStart(2,"0"):sb.scoreB}</div><div class="team-tag">${sb.servingTeam==="B"?(isBadminton?"SERVING • "+(sb.scoreB%2===0?"RIGHT COURT":"LEFT COURT"):`SERVING • SERVER ${sb.serverNumber}`):"RECEIVING"}</div></div></div>
+ <div class="panel rally-panel"><div class="rally-title">RALLY RESULT</div><div class="rally-buttons"><button class="btn primary rally-btn" id="serveWon" ${badmintonGameOver?"disabled":""}>${isBadminton?"🏸 Serving Team Won Rally":"🏓 Serving Team Won Rally"}</button><button class="btn rally-btn" id="receiveWon" ${badmintonGameOver?"disabled":""}>↔ Receiving Team Won Rally</button></div><div class="score-undo"><button class="btn" id="scoreUndo" ${undoCount?"":"disabled"}>↩ Undo</button><span class="undo-count">${undoCount} action${undoCount===1?"":"s"} available</span></div><div class="muted rally-help">${isBadminton?(badmintonGameOver?"Game target reached. Submit the final result or undo the last rally.":"Rally-point scoring: every rally awards a point. Even score = right service court; odd score = left service court. Standard target is 21, win by 2, capped at 30."):"Undo is unlimited. Each press reverses exactly one previous rally action, including server and side-out changes."}</div></div>
  <div class="panel score-submit"><button class="btn success" id="submitScoreboard" style="font-size:18px;padding:13px 22px">🏆 Submit Final Result</button><button class="btn" id="cancelScoreboard">Cancel Game</button></div></div>`;
  e.querySelectorAll('[data-score-court]').forEach(b=>b.onclick=()=>renderScoreboard(Number(b.dataset.scoreCourt)));
- document.getElementById("serveWon").onclick=()=>{pushScoreUndo(sb);if(sb.servingTeam==="A")sb.scoreA++;else sb.scoreB++;save();renderScoreboard(court)};
- document.getElementById("receiveWon").onclick=()=>{pushScoreUndo(sb);if(sb.serverNumber===1)sb.serverNumber=2;else{sb.servingTeam=sb.servingTeam==="A"?"B":"A";sb.serverNumber=1}save();renderScoreboard(court)};
+ document.getElementById("serveWon").onclick=()=>{if(isBadminton&&(Math.max(sb.scoreA,sb.scoreB)>=30||(Math.max(sb.scoreA,sb.scoreB)>=21&&Math.abs(sb.scoreA-sb.scoreB)>=2)))return;pushScoreUndo(sb);if(sb.servingTeam==="A")sb.scoreA++;else sb.scoreB++;if(isBadminton){sb.serverNumber=(sb.servingTeam==="A"?sb.scoreA:sb.scoreB)%2===0?1:2;sb.scoreA=Math.min(30,sb.scoreA);sb.scoreB=Math.min(30,sb.scoreB)}save();renderScoreboard(court)};
+ document.getElementById("receiveWon").onclick=()=>{if(isBadminton&&(Math.max(sb.scoreA,sb.scoreB)>=30||(Math.max(sb.scoreA,sb.scoreB)>=21&&Math.abs(sb.scoreA-sb.scoreB)>=2)))return;pushScoreUndo(sb);if(isBadminton){sb.servingTeam=sb.servingTeam==="A"?"B":"A";if(sb.servingTeam==="A")sb.scoreA++;else sb.scoreB++;sb.serverNumber=(sb.servingTeam==="A"?sb.scoreA:sb.scoreB)%2===0?1:2;sb.scoreA=Math.min(30,sb.scoreA);sb.scoreB=Math.min(30,sb.scoreB)}else if(sb.serverNumber===1)sb.serverNumber=2;else{sb.servingTeam=sb.servingTeam==="A"?"B":"A";sb.serverNumber=1}save();renderScoreboard(court)};
  document.getElementById("scoreUndo").onclick=()=>undoScore(court);
- document.getElementById("scoreReset").onclick=()=>{S.scoreboards[String(court)]={gameRound:g.round,scoreA:0,scoreB:0,servingTeam:"A",serverNumber:2,undoStack:[]};save();renderScoreboard(court);toast("Scoreboard reset to 0 – 0 – 2.")};
+ document.getElementById("scoreReset").onclick=()=>{S.scoreboards[String(court)]={gameRound:g.round,scoreA:0,scoreB:0,servingTeam:"A",serverNumber:2,undoStack:[]};save();renderScoreboard(court);toast(isBadminton?"Badminton scoreboard reset to 00 – 00.":"Scoreboard reset to 0 – 0 – 2.")};
  document.getElementById("scoreGameView").onclick=()=>show("game");
  document.getElementById("cancelScoreboard").onclick=()=>{S.rotation.unshift(g);S.liveGames=S.liveGames.filter(x=>Number(x.court)!==Number(court));delete S.scoreboards[String(court)];startAvailableGames();save();render();toast("Game returned to the queue.")};
  document.getElementById("submitScoreboard").onclick=()=>{if(completeLiveGame(court,sb.scoreA,sb.scoreB,"scoreboard")){show("scoreboard");renderScoreboard();toast("Result submitted. The finished court has been assigned the next eligible game.")}};
@@ -996,9 +1075,72 @@ function clearHistory(){
  toast("Match history and marquee results cleared.");
 }
 
+function sessionStatusLabel(session){
+ return session.endedAt?"Ended":(S.session&&S.session.id===session.id?"Active":"Saved");
+}
+function renderSessionHistory(){
+ const el=document.getElementById("sessionHistoryContent");if(!el)return;
+ const sessions=[...(S.sessions||[])].sort((a,b)=>new Date(b.endedAt||b.startedAt||0)-new Date(a.endedAt||a.startedAt||0));
+ if(!sessions.length){el.innerHTML='<div class="panel empty">No saved sessions yet. End a session to preserve it here.</div>';return}
+ el.innerHTML='<div class="rotation-grid">'+sessions.map(ss=>{
+   const games=S.games.filter(g=>g.sessionId===ss.id);
+   const points=games.reduce((n,g)=>n+(Number(g.s1)||0)+(Number(g.s2)||0),0);
+   const playerCount=new Set(games.flatMap(g=>[...(g.team1||[]),...(g.team2||[])])).size;
+   return `<div class="rotation"><div class="round">${sessionStatusLabel(ss).toUpperCase()}</div><h3>${esc(ss.name||"Unnamed Session")}</h3><div class="mini">📅 Started: ${formatShortDateTime(ss.startedAt)}</div><div class="mini">🏁 Ended: ${formatShortDateTime(ss.endedAt)}</div><div class="chips"><span>${games.length} matches</span><span>${playerCount} players</span><span>${points} points</span></div><div class="actions"><button class="btn primary" data-session-stats="${esc(ss.id)}">View Stats</button><button class="btn" data-session-matches="${esc(ss.id)}">View Matches</button></div></div>`;
+ }).join("")+'</div>';
+ el.querySelectorAll("[data-session-stats]").forEach(b=>b.onclick=()=>{show("stats");const sel=document.getElementById("statsSession");if(sel){sel.value=b.dataset.sessionStats;renderStatsView()}});
+ el.querySelectorAll("[data-session-matches]").forEach(b=>b.onclick=()=>{const id=b.dataset.sessionMatches;const rows=[...document.querySelectorAll("#historyContent tbody tr")];rows.forEach(r=>r.style.display="");document.querySelectorAll("#historyContent tbody tr").forEach(r=>{r.style.display=r.dataset.sessionId===id?"":"none"});toast("Showing matches for the selected session.")});
+}
+function populateStatsSelectors(){
+ const se=document.getElementById("statsSession"),pe=document.getElementById("statsPlayer");if(!se||!pe)return;
+ const sessions=[...(S.sessions||[])].filter(ss=>S.games.some(g=>g.sessionId===ss.id)||(S.session&&S.session.id===ss.id));
+ if(S.session&&!sessions.some(x=>x.id===S.session.id))sessions.unshift(S.session);
+ sessions.sort((a,b)=>new Date(b.startedAt||0)-new Date(a.startedAt||0));
+ const prior=se.value;
+ se.innerHTML='<option value="">Select session…</option><option value="all">All sessions</option>'+sessions.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}${x.endedAt?" • Ended":""}</option>`).join("");
+ if(prior&&(prior==="all"||sessions.some(x=>x.id===prior)))se.value=prior;else se.value="";
+ const id=se.value;
+ const relevantGames=id==="all"?S.games:id?S.games.filter(g=>g.sessionId===id):[];
+ const names=[...new Set(relevantGames.flatMap(g=>[...(g.team1||[]),...(g.team2||[])]))].sort((a,b)=>a.localeCompare(b));
+ const old=pe.value;
+ pe.innerHTML='<option value="">Select player…</option>'+names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("");
+ if(old&&names.includes(old))pe.value=old;else pe.value="";
+ se.disabled=false;pe.disabled=!id||!names.length;
+}
+function renderStatsView(){
+ populateStatsSelectors();
+ const se=document.getElementById("statsSession"),pe=document.getElementById("statsPlayer"),detail=document.getElementById("playerStatsDetail");
+ const id=se?.value,name=pe?.value;
+ if(!id){detail.innerHTML='<div class="panel empty">Choose a session first, then choose a player to view individual stats.</div>';document.getElementById("statsContent").innerHTML='<div class="panel empty">Choose a session to display its leaderboard.</div>';return}
+ const allMode=id==="all";const allStats=allMode?statsAcrossSessions():statsForSession(id);const ss=allMode?{name:"All Sessions"}:(S.sessions.find(v=>v.id===id)||S.session);
+ if(!name){detail.innerHTML='<div class="panel empty">Choose a player to view their match-by-match statistics.</div>';document.getElementById("statsContent").innerHTML=allMode?tableHTMLFromStats(allStats):tableHTMLForSession(id);return}
+ const x=allStats.find(p=>p.name===name);
+ if(!x){detail.innerHTML='<div class="panel empty">No recorded stats for this player in this session.</div>';return}
+ const games=S.games.filter(g=>(allMode||g.sessionId===id)&&([...(g.team1||[]),...(g.team2||[])].includes(name))).sort((a,b)=>new Date(b.time||0)-new Date(a.time||0));
+ detail.innerHTML=`<div class="cards"><div class="card"><div class="label">${esc(name)} · Games</div><div class="value">${x.games}</div></div><div class="card"><div class="label">Wins / Losses</div><div class="value">${x.wins} / ${x.losses}</div></div><div class="card"><div class="label">Win Rate</div><div class="value">${(x.pct*100).toFixed(1)}%</div></div><div class="card"><div class="label">Point Difference</div><div class="value">${x.diff>0?"+":""}${x.diff}</div></div></div><div class="panel"><h3 style="margin-top:0">${esc(ss?.name||"Selected session")} · Player breakdown</h3><div class="chips"><span>Points for: ${x.pf}</span><span>Points against: ${x.pa}</span><span>Session MMR: ${Math.round(x.mmr)}</span><span>Rank: #${x.rank}</span></div><div class="section"><h3>Matches played</h3></div>${games.length?'<div class="table"><table><thead><tr><th>Date</th><th>Match</th><th>Score</th><th>Result</th></tr></thead><tbody>'+games.map(g=>{const in1=g.team1.includes(name),won=(in1&&g.winner===1)||(!in1&&g.winner===2);return `<tr><td>${formatShortDateTime(g.time)}</td><td>${esc(g.team1.join(" + "))} vs ${esc(g.team2.join(" + "))}</td><td>${g.s1} - ${g.s2}</td><td>${won?"🏆 Win":"Loss"}</td></tr>`}).join("")+'</tbody></table></div>':'<div class="empty">No matches recorded.</div>'}</div>`;
+ document.getElementById("statsContent").innerHTML=allMode?tableHTMLFromStats(allStats):tableHTMLForSession(id);
+}
+function statsAcrossSessions(){
+ const by=new Map();
+ S.games.forEach(g=>{
+  const p1=g.team1||[],p2=g.team2||[];
+  [...p1,...p2].forEach(name=>{if(!by.has(name))by.set(name,{name,games:0,wins:0,losses:0,pf:0,pa:0,mmr:500})});
+  p1.forEach(name=>{const x=by.get(name);x.games++;x.wins+=g.winner===1?1:0;x.losses+=g.winner===1?0:1;x.pf+=Number(g.s1)||0;x.pa+=Number(g.s2)||0});
+  p2.forEach(name=>{const x=by.get(name);x.games++;x.wins+=g.winner===2?1:0;x.losses+=g.winner===2?0:1;x.pf+=Number(g.s2)||0;x.pa+=Number(g.s1)||0});
+ });
+ return [...by.values()].map(x=>({...x,diff:x.pf-x.pa,pct:x.games?x.wins/x.games:0})).sort((a,b)=>b.wins-a.wins||b.pct-a.pct||b.diff-a.diff||a.name.localeCompare(b.name)).map((x,i)=>({...x,rank:i+1}));
+}
+function tableHTMLFromStats(a){
+ if(!a.length)return '<div class="panel empty">No completed matches found.</div>';
+ return '<div class="table"><table><thead><tr><th>Rank</th><th>Player</th><th>Games</th><th>Wins</th><th>Losses</th><th>Win %</th><th>Points For</th><th>Points Against</th><th>+/-</th></tr></thead><tbody>'+a.map(x=>`<tr><td>${x.rank}</td><td><b>${esc(x.name)}</b></td><td>${x.games}</td><td>${x.wins}</td><td>${x.losses}</td><td>${(x.pct*100).toFixed(2)}%</td><td>${x.pf}</td><td>${x.pa}</td><td>${x.diff>0?"+":""}${x.diff}</td></tr>`).join("")+'</tbody></table></div>';
+}
+function tableHTMLForSession(id){
+ const a=statsForSession(id);if(!a.length)return '<div class="panel empty">No completed matches in this session.</div>';
+ return '<div class="table"><table><thead><tr><th>Rank</th><th>Player</th><th>MMR</th><th>Games</th><th>Wins</th><th>Losses</th><th>Win %</th><th>Points For</th><th>Points Against</th><th>+/-</th></tr></thead><tbody>'+a.map(x=>`<tr class="${x.rank<=3?"r"+x.rank:""}"><td>${x.rank===1?"🥇":x.rank===2?"🥈":x.rank===3?"🥉":x.rank}</td><td><b>${esc(x.name)}</b></td><td><b>${Math.round(x.mmr)}</b></td><td>${x.games}</td><td>${x.wins}</td><td>${x.losses}</td><td>${(x.pct*100).toFixed(2)}%</td><td>${x.pf}</td><td>${x.pa}</td><td>${x.diff>0?"+":""}${x.diff}</td></tr>`).join("")+'</tbody></table></div>';
+}
 function renderHistory(){
- let e=document.getElementById("historyContent");populateExportSessions();if(!S.games.length){e.innerHTML='<div class="panel empty">No games recorded yet.</div>';return}
- e.innerHTML='<div class="table"><table><thead><tr><th>Session</th><th>Game</th><th>Date / Time</th><th>Team 1</th><th>Score</th><th>Team 2</th><th>Winner</th></tr></thead><tbody>'+S.games.slice().reverse().map((g,ri)=>{let gi=S.games.length-1-ri,ss=S.sessions.find(x=>x.id===g.sessionId);return `<tr><td>${esc(ss?.name||"Previous / Legacy Games")}</td><td>Game ${g.round}</td><td>${formatShortDateTime(g.time)}</td><td>${g.team1.map((n,i)=>historyPlayerHTML(gi,"team1",i,n)).join(" ")}</td><td><b>${g.s1} - ${g.s2}</b></td><td>${g.team2.map((n,i)=>historyPlayerHTML(gi,"team2",i,n)).join(" ")}</td><td>🏆 Team ${g.winner}</td></tr>`}).join("")+'</tbody></table></div>';
+ let e=document.getElementById("historyContent");populateExportSessions();renderSessionHistory();if(!S.games.length){e.innerHTML='<div class="panel empty">No games recorded yet.</div>';return}
+ e.innerHTML='<div class="table"><table><thead><tr><th>Session</th><th>Game</th><th>Date / Time</th><th>Team 1</th><th>Score</th><th>Team 2</th><th>Winner</th></tr></thead><tbody>'+S.games.slice().reverse().map((g,ri)=>{let gi=S.games.length-1-ri,ss=S.sessions.find(x=>x.id===g.sessionId);return `<tr data-session-id="${esc(g.sessionId||"legacy")}"><td>${esc(ss?.name||"Previous / Legacy Games")}</td><td>Game ${g.round}</td><td>${formatShortDateTime(g.time)}</td><td>${g.team1.map((n,i)=>historyPlayerHTML(gi,"team1",i,n)).join(" ")}</td><td><b>${g.s1} - ${g.s2}</b></td><td>${g.team2.map((n,i)=>historyPlayerHTML(gi,"team2",i,n)).join(" ")}</td><td>🏆 Team ${g.winner}</td></tr>`}).join("")+'</tbody></table></div>';
  e.querySelectorAll("[data-he]").forEach(b=>b.onclick=()=>editHistoryPlayer(+b.dataset.he,b.dataset.ht,+b.dataset.hi));
 }
 function tournamentParticipants(type){
@@ -1251,12 +1393,14 @@ function render(){
 renderSportsTicker();
 let a=stats(),sg=sessionGames(),total=sg.reduce((n,g)=>n+g.s1+g.s2,0),avg=a.length?a.reduce((n,x)=>n+x.pct,0)/a.length:0;
 document.getElementById("dPlayers").textContent=active().length;document.getElementById("dGames").textContent=sg.length;document.getElementById("dPoints").textContent=total;document.getElementById("dRound").textContent=S.round;document.getElementById("dLeader").textContent=(a.reduce((best,x)=>!best||x.mmr>best.mmr?x:best,null)?.name)||"—";document.getElementById("dBest").textContent=((Math.max(0,...a.map(x=>x.pct)))*100).toFixed(2)+"%";document.getElementById("dPF").textContent=Math.max(0,...a.map(x=>x.pf));document.getElementById("dAvg").textContent=(avg*100).toFixed(2)+"%";document.getElementById("sessionName").textContent=S.session?"🎾 "+S.session.name:"No active session";document.getElementById("sessionMeta").textContent=S.session?"Started "+new Date(S.session.startedAt).toLocaleString()+" • "+sg.length+" games this session • "+(S.courts||1)+" court"+((S.courts||1)===1?"":"s"):"Start a session before generating games or tournaments.";document.getElementById("endSession").disabled=!S.session;let cc=document.getElementById("courtCount");if(cc){cc.value=String(S.courts||1);cc.disabled=!S.session;}
-document.getElementById("dashRotation").innerHTML=rotationHTML();document.getElementById("dashStats").innerHTML=tableHTML();document.getElementById("statsContent").innerHTML=tableHTML();renderGame();renderPlayers();renderHistory();renderTournament();syncTournamentType();renderScoreboard();applyOnlineRoleUI();
+document.getElementById("dashRotation").innerHTML=rotationHTML();document.getElementById("dashStats").innerHTML=tableHTML();document.getElementById("statsContent").innerHTML=S.session?tableHTML():'<div class="panel empty">Start a session to populate the live dashboard leaderboard. Past session stats remain available in Stats.</div>';renderGame();renderPlayers();renderHistory();renderStatsView();renderTournament();syncTournamentType();renderScoreboard();applyOnlineRoleUI();
 }
 document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{let p=b.dataset.page;if(onlineRole!=="viewer"){S.mode=p==="tournament"?"tournament":"roundrobin";save()}show(p);if(p==="scoreboard")renderScoreboard()});
 document.getElementById("newSession").onclick=newSession;document.getElementById("endSession").onclick=endSession;document.getElementById("generate").onclick=generate;document.getElementById("generate2").onclick=generate;document.getElementById("queueSingles").onclick=queueSinglesDialog;document.getElementById("queueSingles2").onclick=queueSinglesDialog;document.getElementById("scoreboardBack").onclick=()=>show("game");
 document.getElementById("exportPdf")?.addEventListener("click",exportSessionPDF);document.getElementById("exportJpeg")?.addEventListener("click",exportSessionJPEG);
 document.getElementById("clearHistory")?.addEventListener("click",clearHistory);
+ document.getElementById("statsSession")?.addEventListener("change",renderStatsView);
+ document.getElementById("statsPlayer")?.addEventListener("change",renderStatsView);
 document.getElementById("courtCount").onchange=()=>{let n=Math.max(1,Math.min(4,Number(document.getElementById("courtCount").value)||1));if(liveGames().length>n){toast("Finish the extra live court games before reducing the number of courts.");document.getElementById("courtCount").value=String(S.courts);return}S.courts=n;if(S.session)S.session.courts=n;startAvailableGames();save();render();toast(n+" court"+(n===1?"":"s")+" selected. Available courts will fill automatically.")};
 document.getElementById("startTournament").onclick=createTournament;
 document.getElementById("tournamentType").onchange=()=>{S.tournament.type=document.getElementById("tournamentType").value;S.tournament.draft=pairingDraft(S.tournament.type);save();renderTournament();};
